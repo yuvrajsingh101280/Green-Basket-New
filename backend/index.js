@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import authRoutes from "../backend/router/authRoutes.js"
 import connectToClodinary from "./config/cloudinary.js"
 import userRoutes from "../backend/router/userRoutes.js"
+import axios from "axios"
 const app = express()
 const port = process.env.PORT
 
@@ -30,10 +31,26 @@ app.use("/api/user", userRoutes)
 
 
 app.get("/", (req, res) => {
-    res.send("Hello world")
+    res.send("Api is live")
 
 })
+// for reseting the uptime
+const url = "https://green-basket-new.onrender.com"
+const interval = 30000
 
+
+function reloadWebsite() {
+    axios
+        .get(url)
+        .then((res) => {
+            console.log("Website reloaded");
+        })
+        .catch((err) => {
+            console.log(`Error : ${err.message}`);
+        });
+}
+
+setInterval(reloadWebsite, interval);
 
 app.listen(port, () => {
 
