@@ -1,2 +1,5 @@
 2025-07-08 13:40:19 - [ERROR]: Error in deleting user account Cannot read properties of undefined (reading 'id')
 2025-07-08 17:33:42 - [ERROR]: Error in updating profile profilePic is not defined
+2025-07-08 22:37:49 - [ERROR]: Error adding address: Cannot read properties of undefined (reading '_id')
+2025-07-08 22:38:20 - [ERROR]: Error adding address: User is not defined
+2025-07-08 22:39:26 - [ERROR]: Error adding address: User is not defined

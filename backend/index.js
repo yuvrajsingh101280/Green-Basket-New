@@ -7,7 +7,10 @@ import authRoutes from "../backend/router/authRoutes.js"
 import connectToClodinary from "./config/cloudinary.js"
 import userRoutes from "../backend/router/userRoutes.js"
 import axios from "axios"
+import addressRoutes from "../backend/router/AddressRoutes.js"
+// app instance
 const app = express()
+// port
 const port = process.env.PORT
 
 // connect to database
@@ -25,7 +28,7 @@ app.use(cookieParser())
 
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
-
+app.use("/api/address", addressRoutes)
 
 
 

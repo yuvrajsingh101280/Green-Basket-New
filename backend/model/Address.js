@@ -46,7 +46,7 @@ const AddressSchema = new mongoose.Schema({
 
     isDefault: {
 
-        type: Boolean, default: false//it tell whether the user address is default or not 
+        type: Boolean, default: true//it tell whether the user address is default or not 
 
     }
 
