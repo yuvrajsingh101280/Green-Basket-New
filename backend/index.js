@@ -8,6 +8,8 @@ import connectToClodinary from "./config/cloudinary.js"
 import userRoutes from "../backend/router/userRoutes.js"
 import axios from "axios"
 import addressRoutes from "../backend/router/AddressRoutes.js"
+import adminRoutes from "../backend/router/adminRoutes.js"
+import superAdmin from "../backend/router/superAdminRouter.js"
 // app instance
 const app = express()
 // port
@@ -29,7 +31,8 @@ app.use(cookieParser())
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/address", addressRoutes)
-
+app.use("/api/admin-routes", adminRoutes)
+app.use("/api/super-admin", superAdmin)
 
 
 

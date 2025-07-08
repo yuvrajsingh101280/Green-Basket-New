@@ -1,4 +1,4 @@
-export const superAdminOnly = async (req, res) => {
+export const superAdminOnly = async (req, res, next) => {
 
 
 

@@ -3,3 +3,5 @@
 2025-07-08 22:37:49 - [ERROR]: Error adding address: Cannot read properties of undefined (reading '_id')
 2025-07-08 22:38:20 - [ERROR]: Error adding address: User is not defined
 2025-07-08 22:39:26 - [ERROR]: Error adding address: User is not defined
+2025-07-09 01:17:28 - [ERROR]: Error in creating new Admin : E11000 duplicate key error collection: greenBasket.users index: email_1 dup key: { email: "shuvams302@gmail.com" }
+2025-07-09 01:29:22 - [ERROR]: Error in deleting admin: Cast to ObjectId failed for value "{ adminId: '686d7510ba54b5c95b11d2a3' }" (type Object) at path "_id" for model "User"

@@ -51,3 +51,9 @@
 2025-07-08 22:44:07 - [INFO]: Address added for user 686cd35e4299051faa1f4b79
 2025-07-08 22:54:41 - [INFO]: Address added for user 686cd35e4299051faa1f4b79
 2025-07-08 23:00:26 - [INFO]: Default Address set for user 686cd35e4299051faa1f4b79
+2025-07-09 01:08:22 - [INFO]: User logged in: superadmin@greenbasket.com
+2025-07-09 01:14:16 - [INFO]: New admin created by admin : 686d7510ba54b5c95b11d2a3
+2025-07-09 01:17:27 - [INFO]: Existing user upgraded to admin : 686cd35e4299051faa1f4b79
+2025-07-09 01:17:28 - [ERROR]: Error in creating new Admin : E11000 duplicate key error collection: greenBasket.users index: email_1 dup key: { email: "shuvams302@gmail.com" }
+2025-07-09 01:29:22 - [ERROR]: Error in deleting admin: Cast to ObjectId failed for value "{ adminId: '686d7510ba54b5c95b11d2a3' }" (type Object) at path "_id" for model "User"
+2025-07-09 01:30:02 - [INFO]: Admin deleted successfully : 686d7510ba54b5c95b11d2a3
