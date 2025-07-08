@@ -66,9 +66,9 @@ const Navbar = () => {
           {/* Profile Icon */}
           <div>
             <img
-              src={assets.Profile}
+              src={user?.profilePic || assets.Profile}
               alt="profile"
-              className="w-8 h-8 rounded-full cursor-pointer"
+              className="w-8 h-8 rounded-full object-cover cursor-pointer"
               onClick={() => setShowAuthDropdown((prev) => !prev)}
             />
             {!user && showAuthDropdown && (
@@ -129,15 +129,15 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* DESKTOP NAVBAR (Untouched) */}
+      {/* DESKTOP NAVBAR */}
       <div className="bg-white h-[70px] w-[95%] mx-auto mt-6 rounded-lg shadow-md items-center p-4 justify-evenly hidden md:flex">
         <div className="border-r-1 border-gray-300 pr-1 cursor-pointer">
-          <img src={assets.logo1} alt="" className="w-30" />
+          <img src={assets.logo1} alt="logo" className="w-30" />
         </div>
 
         <div className="flex gap-2 justify-center items-center ml-5 cursor-pointer">
           <h2 className="text-lg font-bold">Select Location</h2>
-          <img src={assets.down_arrow} alt="" />
+          <img src={assets.down_arrow} alt="arrow" />
         </div>
 
         <div className="flex gap-2 justify-center items-center ml-5">
@@ -167,8 +167,18 @@ const Navbar = () => {
               onClick={() => setShowMenuItems((prev) => !prev)}
               className="flex gap-2 justify-center items-center cursor-pointer"
             >
-              <h1 className="text-lg font-semibold">My Account</h1>
-              <img src={assets.down_arrow} alt="" />
+              {user.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  alt="Profile"
+                  className="w-9 h-9 rounded-full border-2 border-gray-300 object-cover "
+                />
+              ) : (
+                <>
+                  <h1 className="text-lg font-semibold">My Account</h1>
+                  <img src={assets.down_arrow} alt="" />
+                </>
+              )}
             </div>
           ) : (
             <div className="cursor-pointer flex flex-col items-center">

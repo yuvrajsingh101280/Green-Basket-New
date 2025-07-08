@@ -3,7 +3,7 @@ import bcrypt, { genSalt } from "bcryptjs"
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js"
 
 import { sendOTP, verifyOTP } from "../config/twilioClient.js"
-import { v2 as cloudinary } from "cloudinary"
+
 import logger from "../utils/logger.js"
 
 
@@ -146,41 +146,7 @@ export const verification = async (req, res) => {
 
 }
 
-export const updateProfilePicture = async (req, res) => {
 
-    try {
-
-        const userId = req.user._id
-        const image = req.file
-
-
-        if (!image) {
-            logger.warn("No image uploaded for profile picture update");
-            return res.status(400).json({ success: false, message: "No image uploaded" });
-        }
-        const user = await User.findById(userId)
-
-        if (!user) {
-            logger.warn("User not found during profile update");
-            return res.status(400).json({ success: false, message: "User not found" })
-
-        }
-
-
-        const upload = await cloudinary.uploader.upload(image.path)
-
-        const profilePic = upload.secure_url
-
-        await User.findByIdAndUpdate(userId, { profilePic }, { new: true })
-
-        logger.info(`Profile photo updated for user ID: ${userId}`);
-        res.status(200).json({ success: true, message: "Profile photo update" })
-    } catch (error) {
-        logger.error(`Profile picture update failed: ${error.message}`);
-        return res.json({ success: false, message: "Profile photo not updated" })
-    }
-
-}
 export const login = async (req, res) => {
 
     try {
