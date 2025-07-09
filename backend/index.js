@@ -10,6 +10,8 @@ import axios from "axios"
 import addressRoutes from "../backend/router/AddressRoutes.js"
 import adminRoutes from "../backend/router/adminRoutes.js"
 import superAdmin from "../backend/router/superAdminRouter.js"
+import productRoute from "../backend/router/productRoutes.js"
+import categoryRotue from "../backend/router/categoryRoutes.js"
 // app instance
 const app = express()
 // port
@@ -33,7 +35,8 @@ app.use("/api/user", userRoutes)
 app.use("/api/address", addressRoutes)
 app.use("/api/admin-routes", adminRoutes)
 app.use("/api/super-admin", superAdmin)
-
+app.use("/api/product", productRoute)
+app.use("/api/category", categoryRotue)
 
 
 app.get("/", (req, res) => {
