@@ -3,18 +3,39 @@ const ProductSchema = new mongoose.Schema({
 
     name: {
 
-        type: String
+        type: String,
+        required: true,
+        trim: true,
 
     },
     description: {
 
-        type: String
+        type: String,
+        trim: true
 
     },
     price: {
 
-        type: Number
+        type: Number,
+        required: true
 
+    },
+
+    discount: {
+        type: Number,
+        default: 0,// for discounted products filter
+        min: 0,
+        max: 100
+    },
+    discountExpiresAt: {
+        type: Date,
+        default: null
+    },
+    rating: {
+        type: Number,
+        default: 0, // for filtering by rating
+        min: 0,
+        max: 5
     },
     images: [{
 
@@ -30,12 +51,14 @@ const ProductSchema = new mongoose.Schema({
     },
     stock: {
 
-        type: Number
+        type: Number,
+        required: true
 
     },
     unit: {
 
-        type: String//kg,litre,pcs
+        type: String,//kg,litre,pcs
+        required: true
 
     },
     isActive: {
@@ -44,7 +67,11 @@ const ProductSchema = new mongoose.Schema({
         default: true,
 
     }
-
+    ,
+    isFeatured: {
+        type: Boolean,
+        default: false // for homepage featured section
+    }, tags: [String] // e.g., ["organic", "fresh", "summer"]
 
 
 }, { timestamps: true })

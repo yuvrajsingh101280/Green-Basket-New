@@ -29,6 +29,16 @@
             "date": 1751999649616,
             "name": "logs\\daily-2025-07-09.log",
             "hash": "31eb3eabbbb972fd4ee5314a8155a538c3247bc618ca2e50b3c2c2dfdcb72c66"
+        },
+        {
+            "date": 1752248755962,
+            "name": "logs\\daily-2025-07-11.log",
+            "hash": "184868a188d26ade4d173e26593d5e5915814adc30607ef9a954db6f61ff1b70"
+        },
+        {
+            "date": 1752258627883,
+            "name": "logs\\daily-2025-07-12.log",
+            "hash": "184f7a9592bfc6cb3bd60e7f724191151a7923f05e362230798b4ac321ecafb6"
         }
     ],
     "hashType": "sha256"

@@ -1,0 +1,7 @@
+2025-07-12 11:55:25 - [INFO]: User logged in: superadmin@greenbasket.com
+2025-07-12 11:58:29 - [INFO]: Category created : 6872008d3e0c3bd037f75d01
+2025-07-12 12:09:44 - [ERROR]: Error in creating product : File size too large. Got 11303710. Maximum is 10485760. Upgrade your plan to enjoy higher limits https://www.cloudinary.com/pricing/upgrades/file-limit
+2025-07-12 12:10:42 - [ERROR]: Error in creating product : Product validation failed: category: Cast to ObjectId failed for value "fruits" (type string) at path "category" because of "BSONError"
+2025-07-12 12:11:49 - [INFO]: product created : 687203ad3e0c3bd037f75d08
+2025-07-12 12:14:20 - [INFO]: product created : 687204443e0c3bd037f75d0c
+2025-07-12 12:16:22 - [ERROR]: Error in getProductById: Cast to ObjectId failed for value "all-products\n" (type string) at path "_id" for model "Product"

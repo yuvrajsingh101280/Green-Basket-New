@@ -24,8 +24,8 @@ await connectToClodinary()
 // middleware
 app.use(express.json())
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend URL
-    credentials: true // Important for cookies, if you're using them
+    origin: 'http://localhost:5173',
+    credentials: true //
 }));
 app.use(cookieParser())
 // routers
