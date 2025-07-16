@@ -12,6 +12,7 @@ import adminRoutes from "../backend/router/adminRoutes.js"
 import superAdmin from "../backend/router/superAdminRouter.js"
 import productRoute from "../backend/router/productRoutes.js"
 import categoryRotue from "../backend/router/categoryRoutes.js"
+import cartRouter from "../backend/router/cartRoutes.js"
 // app instance
 const app = express()
 // port
@@ -37,6 +38,7 @@ app.use("/api/admin-routes", adminRoutes)
 app.use("/api/super-admin", superAdmin)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRotue)
+app.use("api/cart", cartRouter)
 
 
 app.get("/", (req, res) => {
@@ -48,18 +50,18 @@ const url = "https://green-basket-new.onrender.com"
 const interval = 30000
 
 
-function reloadWebsite() {
-    axios
-        .get(url)
-        .then((res) => {
-            console.log("Website reloaded");
-        })
-        .catch((err) => {
-            console.log(`Error : ${err.message}`);
-        });
-}
+// function reloadWebsite() {
+//     axios
+//         .get(url)
+//         .then((res) => {
+//             console.log("Website reloaded");
+//         })
+//         .catch((err) => {
+//             console.log(`Error : ${err.message}`);
+//         });
+// }
 
-setInterval(reloadWebsite, interval);
+// setInterval(reloadWebsite, interval);
 
 app.listen(port, () => {
 
