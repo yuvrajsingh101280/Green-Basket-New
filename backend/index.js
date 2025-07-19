@@ -38,7 +38,7 @@ app.use("/api/admin-routes", adminRoutes)
 app.use("/api/super-admin", superAdmin)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRotue)
-app.use("api/cart", cartRouter)
+app.use("/api/cart", cartRouter)
 
 
 app.get("/", (req, res) => {
