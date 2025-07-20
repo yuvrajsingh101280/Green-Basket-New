@@ -134,7 +134,7 @@ export const placeOrder = async (req, res) => {
 
 
 }
-// verrify payement
+// verify payement
 
 export const verifyRazorpayPayment = async (req, res) => {
     const session = await mongoose.startSession()

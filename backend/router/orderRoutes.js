@@ -7,6 +7,7 @@ const router = express.Router()
 
 router.post("/place", protectRoute, placeOrder)
 router.post("/verify", protectRoute, verifyRazorpayPayment)
+router.get("/my-orders", protectRoute)
 
 
 export default router
