@@ -13,6 +13,7 @@ import superAdmin from "../backend/router/superAdminRouter.js"
 import productRoute from "../backend/router/productRoutes.js"
 import categoryRotue from "../backend/router/categoryRoutes.js"
 import cartRouter from "../backend/router/cartRoutes.js"
+import orderRotuer from "../backend/router/orderRoutes.js"
 // app instance
 const app = express()
 // port
@@ -39,7 +40,7 @@ app.use("/api/super-admin", superAdmin)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRotue)
 app.use("/api/cart", cartRouter)
-
+app.use("/api/order", orderRotuer)
 
 app.get("/", (req, res) => {
     res.send("Api is live")

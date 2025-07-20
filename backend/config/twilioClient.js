@@ -33,3 +33,21 @@ export const verifyOTP = async (phone, code) => {
 }
 
 
+export const sendOrderConfirmationSMS = async ({ phone, orderId, amount, deliveryDate, trackingUrl }) => {
+    const message = `Your order ${orderId} of ${amount} has been placed successfully\n Expected deliver : ${deliveryDate}\n Track here : ${trackingUrl}`
+    try {
+        const res = await client.messages.create({
+
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to: phone,
+            body: message
+
+
+        })
+        return res
+    } catch (error) {
+        console.log("Error in seding SMS ", error.message)
+        return null
+    }
+
+}

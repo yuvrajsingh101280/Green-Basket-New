@@ -4,12 +4,13 @@ const OrderSchema = new mongoose.Schema({
 
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true
 
     },
 
 
-    OrderId: String,
+    orderId: String,
     items: [
 
 
@@ -17,35 +18,38 @@ const OrderSchema = new mongoose.Schema({
         {
 
             productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-            priceAtPurchase: Number,
+            price: Number,
             quantity: Number
         }
 
 
     ],
 
-    totalAmount: Number,
-    status: {
+    totalAmount: { type: Number, required: true },
+    orderStatus: {
 
 
 
 
         type: String,
-        enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
-        default: "Pending"
+        enum: ["placed", "packed", "shipped", "delivered", "cancelled"],
+        default: "placed"
 
     },
     paymentStatus: {
 
 
         type: String,
-        enum: ["paid", "unPaid"],
-        default: "unPaid"
+        enum: ["paid", "pending", "failed"],
+        default: "pending"
 
 
     },
-    paymentMethod: String,
-    addressId: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' },
+    paymentMethod: { type: String, enum: ["online", "cod"], default: "pending" },
+    razorpayOrderId: String,
+    razorpayPaymentId: String,
+    razorpaySignature: String,
+    shippingAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
     deliveryDate: Date
 
 
