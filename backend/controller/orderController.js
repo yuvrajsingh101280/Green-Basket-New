@@ -202,3 +202,151 @@ export const verifyRazorpayPayment = async (req, res) => {
     }
 
 }
+// get user orders
+export const getMyOrder = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const isMobile = req.query.mobile === "true";
+
+        const orders = await Order.find({ userId })
+            .populate({
+                path: "items.productId",
+                select: isMobile
+                    ? "name price images.url"
+                    : "name price description images",
+            })
+            .populate({
+                path: "shippingAddress",
+                select: "street city pincode state",
+            })
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const optimizedOrders = orders.map(order => {
+            const optimisedItems = order.items.map(item => {
+                const product = item.productId;
+                const thumbnail =
+                    isMobile && product.images?.[0]?.url
+                        ? product.images[0].url
+                        : product.images || [];
+
+                return {
+                    ...item.toObject(),
+                    productId: {
+                        _id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        image: thumbnail,
+                    },
+                };
+            });
+
+            return {
+                _id: order._id,
+                orderId: order.orderId,
+                items: optimisedItems,
+                totalAmount: order.totalAmount,
+                orderStatus: order.orderStatus,
+                paymentStatus: order.paymentStatus,
+                createdAt: order.createdAt,
+                shippingAddress: order.shippingAddress,
+            };
+        });
+
+        return res.status(200).json({
+            success: true,
+            page,
+            totalOrders: optimizedOrders.length,
+            orders: optimizedOrders,
+        });
+    } catch (error) {
+        logger.error("Error in fetching user orders", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
+// get all orders(admin)
+export const getAllOrders = async (req, res) => {
+    try {
+        const {
+            page = 1,
+            limit = 10,
+            status,
+            userId,
+            sort = "desc"
+        } = req.query;
+
+        const currentPage = Math.max(parseInt(page), 1);
+        const perPage = Math.max(parseInt(limit), 1);
+        const skip = (currentPage - 1) * perPage;
+
+        const query = {};
+
+        if (status) query.orderStatus = status;
+        if (userId) query.userId = userId;
+
+        // Fetch orders with population
+        const orders = await Order.find(query)
+            .populate({ path: "userId", select: "name email phone" })
+            .populate({ path: "items.productId", select: "name price images" })
+            .populate({ path: "shippingAddress", select: "street city pincode state" })
+            .sort({ createdAt: sort === "asc" ? 1 : -1 })
+            .skip(skip)
+            .limit(perPage);
+
+        const totalOrders = await Order.countDocuments(query);
+
+        // Format response
+        const formattedOrders = orders.map((order) => ({
+            _id: order._id,
+            orderId: order.orderId,
+            user: order.userId,
+            items: order.items.map((item) => ({
+                _id: item._id,
+                quantity: item.quantity,
+                price: item.price,
+                product: {
+                    _id: item.productId?._id,
+                    name: item.productId?.name,
+                    price: item.productId?.price,
+                    image: item.productId?.images?.[0]?.url || null,
+                }
+            })),
+            totalAmount: order.totalAmount,
+            paymentStatus: order.paymentStatus,
+            orderStatus: order.orderStatus,
+            createdAt: order.createdAt,
+            shippingAddress: order.shippingAddress,
+        }));
+
+        res.status(200).json({
+            success: true,
+            totalOrders,
+            currentPage,
+            totalPages: Math.ceil(totalOrders / perPage),
+            orders: formattedOrders,
+        });
+
+    } catch (error) {
+        logger.error("Error in fetching all orders", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch all orders"
+        });
+    }
+};
+export const getOrderById = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+
+
+
+}
