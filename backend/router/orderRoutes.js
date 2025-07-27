@@ -1,6 +1,6 @@
 import express from "express"
 import protectRoute from "../middleware/protectRoute.js"
-import { getAllOrders, getMyOrder, placeOrder, verifyRazorpayPayment } from "../controller/orderController.js"
+import { cancelOrder, getAllOrders, getMyOrder, placeOrder, verifyRazorpayPayment } from "../controller/orderController.js"
 import { adminOnly } from "../middleware/adminMiddleware.js"
 const router = express.Router()
 
@@ -9,6 +9,7 @@ const router = express.Router()
 router.post("/place", protectRoute, placeOrder)
 router.post("/verify", protectRoute, verifyRazorpayPayment)
 router.get("/my-orders", protectRoute, getMyOrder)
+router.put("/cancel/:id", protectRoute, cancelOrder)
 // accessible to logged-in users and admins
 router.get("/:id", protectRoute)
 

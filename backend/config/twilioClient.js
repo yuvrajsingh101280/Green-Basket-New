@@ -51,3 +51,25 @@ export const sendOrderConfirmationSMS = async ({ phone, orderId, amount, deliver
     }
 
 }
+// send sms
+export const sendSMS = async (to, message) => {
+
+    try {
+
+        await client.messages.create({
+
+
+
+            body: message, to: to, from: process.env.TWILIO_PHONE_NUMBER
+
+        })
+        console.log("SMS sent successfully")
+
+
+    } catch (error) {
+        console.log("Error sending SMs", error)
+    }
+
+
+
+}

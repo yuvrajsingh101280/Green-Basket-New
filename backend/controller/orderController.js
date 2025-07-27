@@ -5,7 +5,7 @@ import { generateOrderId } from "../utils/orderUtils/generateOrderId.js"
 import Product from "../model/Product.js"
 import Order from "../model/Order.js"
 import { razorpay } from "../razorpay/razorpayInstance.js"
-import { sendOrderConfirmationSMS } from "../config/twilioClient.js"
+import { sendOrderConfirmationSMS, sendSMS } from "../config/twilioClient.js"
 import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
 import logger from "../utils/logger.js"
 
@@ -342,9 +342,133 @@ export const getAllOrders = async (req, res) => {
 };
 export const getOrderById = async (req, res) => {
     try {
+        const orderId = req.params.id;
+        const user = req.user;
 
+        //  Validate MongoDB ObjectId format
+        if (!orderId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ success: false, message: "Invalid Order ID format" });
+        }
+
+        //  Fetch and populate order
+        const order = await Order.findById(orderId)
+            .populate("items.productId", "name price images")
+            .populate("shippingAddress", "street city pincode state")
+            .populate("userId", "name email phone");
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+        // ✅ Role-based Access Control (RBAC)
+        if (
+            order.userId._id.toString() !== user._id.toString() &&
+            user.role !== "admin" &&
+            user.role !== "super-admin"
+        ) {
+            return res.status(403).json({ success: false, message: "Access denied" });
+        }
+
+        // ✅ Format response
+        const formattedOrder = {
+            _id: order._id,
+            orderId: order.orderId,
+            user: {
+                _id: order.userId._id,
+                name: order.userId.name,
+                email: order.userId.email,
+                phone: order.userId.phone,
+            },
+            items: order.items.map((item) => ({
+                _id: item._id,
+                quantity: item.quantity,
+                price: item.price,
+                product: {
+                    _id: item.productId?._id,
+                    name: item.productId?.name,
+                    price: item.productId?.price,
+                    image: item.productId?.images?.[0]?.url || null,
+                },
+            })),
+            totalAmount: order.totalAmount,
+            paymentStatus: order.paymentStatus,
+            orderStatus: order.orderStatus,
+            paymentMethod: order.paymentMethod,
+            createdAt: order.createdAt,
+            deliveryDate: order.deliveryDate,
+            shippingAddress: order.shippingAddress,
+        };
+
+        return res.status(200).json({ success: true, order: formattedOrder });
     } catch (error) {
+        logger.error(" Error fetching order by ID:", error);
+        return res.status(500).json({ success: false, message: "Failed to fetch order" });
+    }
+};
+export const cancelOrder = async (req, res) => {
 
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+
+
+    try {
+        const { id: orderId } = req.params
+        const user = req.user
+
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({ success: false, message: "Invalid Order ID format" });
+        }
+        const order = await Order.findById(orderId).session(session)
+        if (!order) {
+
+            return res.status(404).json({ success: false, message: "Order not found" })
+        }
+        const isOwner = order.userId.toString() === user._id.toString()
+        const isAdmin = ["admin", "super-admin"].includes(user.role)
+        if (!isOwner && !isAdmin) {
+            return res.status(403).json({ success: false, message: "Not authorized to cancel the order" })
+        }
+        // check if already cancelled
+        if (order.orderStatus === "cancelled") {
+
+            return res.status(400).json({ success: false, message: "Order already cancelled" })
+
+        }
+        order.orderStatus = "cancelled"
+        order.paymentStatus = order.paymentMethod === "cod" ? "pending" : "refund_initiated"
+        await order.save({ session })
+        // Restore the inventory
+        for (const item of order.items) {
+
+            await Product.findByIdAndUpdate(
+                item.productId, { $inc: { stock: item.quantity } },
+                { session }
+
+
+            )
+
+
+        }
+        await session.commitTransaction()
+        session.endSession()
+
+        const phone = user.phone || order.shippingAddress?.phone
+        if (phone) {
+
+            const message = `Order ${order.orderId || order._id} has been cancelled. Refund (if applicable) will be processed soon`
+            await sendSMS(phone, message)
+
+
+        }
+        logger.info(`order ${order._id} cancelle by user ${user._id}`)
+        return res.status(200).json({ success: true, message: "Order cancelled successfully", order })
+    } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
+        logger.error("Error cancelling order:", error)
+        return res.status(500).json({ success: false, message: "Internal Server Error" })
     }
 
 

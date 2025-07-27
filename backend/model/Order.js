@@ -40,7 +40,7 @@ const OrderSchema = new mongoose.Schema({
 
 
         type: String,
-        enum: ["paid", "pending", "failed"],
+        enum: ["paid", "pending", "failed", "refund_initiated"],
         default: "pending"
 
 
