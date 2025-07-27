@@ -474,3 +474,85 @@ export const cancelOrder = async (req, res) => {
 
 
 }
+export const updateOrderStatus = async (req, res) => {
+
+    try {
+        const { id: orderId } = req.params
+        const { status: newStatus } = req.body
+        const user = req.user
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({ success: false, message: "Invalid Order ID format" });
+        }
+        const allowedRoles = ["admin", "super-admin"]
+        if (!allowedRoles.includes(user.role)) {
+            return res.status(403).json({ success: false, message: "Unauthorized : Admin access Only" })
+
+        }
+
+        const allowedStatuses = ["placed", "packed", "shipped", "delivered"]
+        const validTransitions = {
+
+            placed: ["packed"],
+            packed: ["shipped"],
+            shipped: ["delivered"]
+
+
+
+        }
+        // validate new status
+
+        if (!allowedStatuses.includes(newStatus)) {
+
+            return res.status(400).json({ success: false, message: "Invalid status provided" })
+
+        }
+
+        const order = await Order.findById(orderId)
+        if (!order) {
+
+            return res.status(404).json({ success: false, message: "Order not found" })
+
+
+        }
+        const currentStatus = order.orderStatus
+        const allowedNext = validTransitions[currentStatus] || []
+        // prevent invalid transition
+        if (!allowedNext.includes(newStatus)) {
+
+            return res.status(400).json({
+                success: false,
+                message: `Cannot transition from ${currentStatus} to ${newStatus}`
+
+            })
+
+        }
+        if (currentStatus === newStatus) {
+            return res.status(400).json({
+                success: false,
+                message: `Order is already marked as '${newStatus}'`
+            });
+        }
+
+        // update the order status
+        order.orderStatus = newStatus
+        await order.save()
+
+
+        // send SMS for the order update
+        const phone = order.shippingAddress?.phone
+        if (phone) {
+
+
+            const message = `Your order ${order.orderId || order._id} status is now updated to ${newStatus.toUpperCase()}`
+            await sendSMS(phone, message)
+
+        }
+        logger.info(`order ${order._id} status updated to ${newStatus} by ${user.role} (${user._id})`)
+        return res.status(200).json({ success: true, message: `Order status updated to ${newStatus}`, order })
+    } catch (error) {
+        logger.error("Error updating order status:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+
+
+}

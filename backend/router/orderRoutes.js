@@ -1,6 +1,6 @@
 import express from "express"
 import protectRoute from "../middleware/protectRoute.js"
-import { cancelOrder, getAllOrders, getMyOrder, placeOrder, verifyRazorpayPayment } from "../controller/orderController.js"
+import { cancelOrder, getAllOrders, getMyOrder, placeOrder, updateOrderStatus, verifyRazorpayPayment } from "../controller/orderController.js"
 import { adminOnly } from "../middleware/adminMiddleware.js"
 const router = express.Router()
 
@@ -16,5 +16,6 @@ router.get("/:id", protectRoute)
 // admin
 
 router.get("/all-orders", protectRoute, adminOnly, getAllOrders)
+router.patch("update-status/:id", protectRoute, adminOnly, updateOrderStatus)
 
 export default router
