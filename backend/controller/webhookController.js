@@ -8,7 +8,7 @@ import { sendOrderConfirmationSMS } from "../config/twilioClient.js";
 export const handleRazorpayWebhook = async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
-
+    console.log(signature)
     // ✅ Razorpay sends raw buffer, not parsed JSON
     const rawBody = req.body;
     const bodyString = rawBody.toString("utf8");
@@ -20,7 +20,7 @@ export const handleRazorpayWebhook = async (req, res) => {
         .createHmac("sha256", secret)
         .update(bodyString)
         .digest("hex");
-
+    console.log(expectedSignature)
     if (signature !== expectedSignature) {
         console.log("❌ Invalid signature");
         return res.status(400).send("Invalid signature");

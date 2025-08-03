@@ -1,13 +1,14 @@
 import express from "express"
 import protectRoute from "../middleware/protectRoute.js"
-import { cancelOrder, getAllOrders, getCustomerTypes, getMyOrder, getOrderStatusBreakdown, getOrderSummary, getSalesTrends, getTopSellingProducts, placeOrder, trackOrder, updateOrderStatus, verifyRazorpayPayment } from "../controller/orderController.js"
+import { cancelOrder, getAllOrders, getCustomerTypes, getMyOrder, getOrderStatusBreakdown, getOrderSummary, getSalesTrends, getTopSellingProducts, manuallyVerifyPayment, placeOrder, trackOrder, updateOrderStatus } from "../controller/orderController.js"
 import { adminOnly } from "../middleware/adminMiddleware.js"
 const router = express.Router()
 
 // place order
 
 router.post("/place", protectRoute, placeOrder)
-router.post("/verify", protectRoute, verifyRazorpayPayment)
+router.get("/manual-verify/:paymentLinkId", manuallyVerifyPayment);
+// router.post("/verify", protectRoute, verifyRazorpayPayment)
 router.get("/my-orders", protectRoute, getMyOrder)
 router.put("/cancel/:id", protectRoute, cancelOrder)
 router.get("/track/:id", protectRoute, trackOrder)

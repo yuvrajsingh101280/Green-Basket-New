@@ -132,74 +132,140 @@ export const placeOrder = async (req, res) => {
     }
 };
 
-// verify payement
+export const manuallyVerifyPayment = async (req, res) => {
+    const { paymentLinkId } = req.params;
 
-export const verifyRazorpayPayment = async (req, res) => {
-    const session = await mongoose.startSession()
-    session.startTransaction()
     try {
-        const userId = req.user._id
-        const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body
-        if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+        // 1. Fetch payment link status from Razorpay
+        const paymentLink = await razorpay.paymentLink.fetch(paymentLinkId);
 
-            return res.status(400).json({ success: false, message: "Missing Razorpay payment details" })
-
+        if (paymentLink.status !== "paid") {
+            return res.status(400).json({
+                success: false,
+                message: "Payment not completed yet",
+                status: paymentLink.status
+            });
         }
-        const order = await Order.findOne({ razorpayOrderId, userId })
+
+        // 2. Find associated order
+        const order = await Order.findOne({ razorpayPaymentLinkId: paymentLinkId });
         if (!order) {
-            return res.status(400).json({ success: false, message: "Order not found" })
-
-        }
-        // verify signature
-        const isValid = isSignatureValid({ razorpayOrderId, razorpayPaymentId, razorpaySignature }, process.env.RAZORPAY_KEY_SECRET)
-        if (!isValid) {
-
-            return res.status(400).json({ success: false, message: "Invalid payment signature" })
-
+            return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        order.paymentStatus = "paid"
-        order.razorpayPaymentId = razorpayPaymentId
-        order.razorpaySignature = razorpaySignature
-        await order.save({ session })
-        // decrease the stock
-        for (const item of order.items) {
-
-            await Product.updateOne({ _id: item.productId }, { $inc: { stock: -item.quantity } }, { session })
-
+        if (order.paymentStatus === "paid") {
+            return res.status(200).json({ success: true, message: "Order already paid" });
         }
-        // clear the cart
-        await Cart.deleteOne({ userId }, { session })
 
-        // send the confirmation sms
-        const phone = req.user.phone
-        const deliveryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")
-        const trackingUrl = `https://yourdomain.com/orders/${order.orderId}`;
+        // 3. Update order & adjust stock
+        const session = await Order.startSession();
+        session.startTransaction();
 
-        if (phone) {
-            try {
-                await sendOrderConfirmationSMS({ phone, orderId: order.orderId, totalAmount: order.totalAmount, deliveryDate, trackingUrl })
-            } catch (error) {
-                console.log(error)
+        try {
+            order.paymentStatus = "paid";
+            order.razorpayPaymentId = paymentLink.payment_id || "manually-updated";
+            await order.save({ session });
+
+            for (const item of order.items) {
+                await Product.updateOne(
+                    { _id: item.productId },
+                    { $inc: { stock: -item.quantity } },
+                    { session }
+                );
             }
 
+            await Cart.deleteOne({ userId: order.userId }, { session });
+
+            await sendOrderConfirmationSMS({
+                phone: paymentLink.customer.contact,
+                orderId: order.orderId,
+                totalAmount: order.totalAmount,
+                deliveryDate: new Date(order.deliveryDate).toLocaleDateString("en-IN"),
+                trackingUrl: `https://yourdomain.com/orders/${order.orderId}`
+            });
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return res.status(200).json({ success: true, message: "Order updated manually" });
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(500).json({ success: false, message: "Error updating order" });
         }
-        return res.status(200).json({
-            success: true, message: "Payment verified & order confirmed",
-            order
-
-        })
     } catch (error) {
-        await session.abortTransaction()
-        logger.error(`payment verification failed : ${error.message}`)
-        return res.status(500).json({ success: false, message: "Intenal server error" })
-
-    } finally {
-        session.endSession()
-
+        console.error("❌ Manual payment verify error:", error);
+        return res.status(500).json({ success: false, message: "Failed to fetch from Razorpay" });
     }
+};
+// // verify payement
 
-}
+// export const verifyRazorpayPayment = async (req, res) => {
+//     const session = await mongoose.startSession()
+//     session.startTransaction()
+//     try {
+//         const userId = req.user._id
+//         const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body
+//         if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+
+//             return res.status(400).json({ success: false, message: "Missing Razorpay payment details" })
+
+//         }
+//         const order = await Order.findOne({ razorpayOrderId, userId })
+//         if (!order) {
+//             return res.status(400).json({ success: false, message: "Order not found" })
+
+//         }
+//         // verify signature
+//         const isValid = isSignatureValid({ razorpayOrderId, razorpayPaymentId, razorpaySignature }, process.env.RAZORPAY_KEY_SECRET)
+//         if (!isValid) {
+
+//             return res.status(400).json({ success: false, message: "Invalid payment signature" })
+
+//         }
+
+//         order.paymentStatus = "paid"
+//         order.razorpayPaymentId = razorpayPaymentId
+//         order.razorpaySignature = razorpaySignature
+//         await order.save({ session })
+//         // decrease the stock
+//         for (const item of order.items) {
+
+//             await Product.updateOne({ _id: item.productId }, { $inc: { stock: -item.quantity } }, { session })
+
+//         }
+//         // clear the cart
+//         await Cart.deleteOne({ userId }, { session })
+
+//         // send the confirmation sms
+//         const phone = req.user.phone
+//         const deliveryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")
+//         const trackingUrl = `https://yourdomain.com/orders/${order.orderId}`;
+
+//         if (phone) {
+//             try {
+//                 await sendOrderConfirmationSMS({ phone, orderId: order.orderId, totalAmount: order.totalAmount, deliveryDate, trackingUrl })
+//             } catch (error) {
+//                 console.log(error)
+//             }
+
+//         }
+//         return res.status(200).json({
+//             success: true, message: "Payment verified & order confirmed",
+//             order
+
+//         })
+//     } catch (error) {
+//         await session.abortTransaction()
+//         logger.error(`payment verification failed : ${error.message}`)
+//         return res.status(500).json({ success: false, message: "Intenal server error" })
+
+//     } finally {
+//         session.endSession()
+
+//     }
+
+// }
 // get user orders
 export const getMyOrder = async (req, res) => {
     try {
