@@ -10,130 +10,128 @@ import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
 import logger from "../utils/logger.js"
 
 export const placeOrder = async (req, res) => {
-
-    const session = await mongoose.startSession()
-    session.startTransaction()
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
     try {
-        const userId = req.user._id
-        const { paymentMethod, addressId } = req.body
+        const userId = req.user._id;
+        const { paymentMethod, addressId } = req.body;
+
         if (!paymentMethod || !["cod", "online"].includes(paymentMethod)) {
-            return res.status(400).json({ success: false, message: "Invalid payment method" })
-
+            return res.status(400).json({ success: false, message: "Invalid payment method" });
         }
-        const address = await Address.findOne({ _id: addressId, userId }).session(session)
+
+        const address = await Address.findOne({ _id: addressId, userId }).session(session);
         if (!address) {
-            return res.status(400).json({ success: false, message: "Invalid or missing address" })
+            return res.status(400).json({ success: false, message: "Invalid or missing address" });
         }
 
-        const cart = await Cart.findOne({ userId }).populate("items.productId").session(session)
+        const cart = await Cart.findOne({ userId }).populate("items.productId").session(session);
         if (!cart || cart.items.length <= 0) {
-            return res.status(400).json({ success: false, message: "Cart is empty" })
-
-
+            return res.status(400).json({ success: false, message: "Cart is empty" });
         }
-        // calculation of total Amount
-        let totalAmount = 0
+
+        // calculate total
+        let totalAmount = 0;
         for (const item of cart.items) {
-
-
-            const product = item.productId
+            const product = item.productId;
             if (!product || product.stock < item.quantity) {
-                throw new Error(`Insufficient stock for ${product?.name}`)
-
-
+                throw new Error(`Insufficient stock for ${product?.name}`);
             }
-            totalAmount += product.price * item.quantity
-
+            totalAmount += product.price * item.quantity;
         }
-        // order data
-        const orderData = {
 
+        // create base order data
+        const orderData = {
             userId,
             orderId: generateOrderId(),
             items: cart.items.map((item) => ({
                 productId: item.productId._id,
                 price: item.productId.price,
-                quantity: item.quantity
+                quantity: item.quantity,
             })),
             totalAmount,
             paymentMethod,
-            paymentStatus: paymentMethod === "cod" ? "paid" : "pending"
-            ,
+            paymentStatus: paymentMethod === "cod" ? "paid" : "pending",
             shippingAddress: addressId,
-            deliveryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")
-
-
-        }
-        // handle cod orders
+            deliveryDate: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes from now
+        };
 
         if (paymentMethod === "cod") {
             for (const item of cart.items) {
-
-                const result = await Product.updateOne({
-
-                    _id: item.productId._id, stock: { $gte: item.quantity }
-
-
-                },
+                const result = await Product.updateOne(
+                    { _id: item.productId._id, stock: { $gte: item.quantity } },
                     { $inc: { stock: -item.quantity } },
                     { session }
-
-                )
+                );
                 if (result.modifiedCount === 0) {
-                    throw new Error(`unable to update stock for ${item.productId.name}`)
-
+                    throw new Error(`Unable to update stock for ${item.productId.name}`);
                 }
-
             }
-            const newOrder = await Order.create([orderData], { session })
-            // clear cart
-            await Cart.deleteOne({ userId }, { session })
-            logger.info(`COD order placed : User - ${userId},orderId- ${orderData.orderId}`)
-            await session.commitTransaction()
 
-            // send confirmation SMS
-            const user = req.user
-            const deliverDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-IN")
-            const trackingUrl = `https://yourdomain.com/orders/${orderData.orderId}`;
+            const newOrder = await Order.create([orderData], { session });
+            await Cart.deleteOne({ userId }, { session });
+            logger.info(`COD order placed: User - ${userId}, OrderId - ${orderData.orderId}`);
+            await session.commitTransaction();
+
             await sendOrderConfirmationSMS({
-
-                phone: user.phone,
+                phone: req.user.phone,
                 orderId: orderData.orderId,
                 totalAmount,
-                deliveryDate, trackingUrl
+                deliveryDate: orderData.deliveryDate.toLocaleDateString("en-IN"),
+                trackingUrl: `https://yourdomain.com/orders/${orderData.orderId}`,
+            });
 
-            })
-            return res.status(200).json({ success: true, message: "Order placed", order: newOrder[0] })
+            return res.status(200).json({ success: true, message: "Order placed", order: newOrder[0] });
         }
-        // handles razorpay order(online payment)
-        const razorpayOrder = await razorpay.orders.create({
+
+        // For ONLINE: Create Razorpay Payment Link
+        const razorpayLink = await razorpay.paymentLink.create({
             amount: totalAmount * 100,
             currency: "INR",
-            receipt: orderData.orderId,
-            payment_capture: 1
+            accept_partial: false,
+            description: `Payment for order ${orderData.orderId}`,
+            customer: {
+                name: req.user.name,
+                email: req.user.email,
+                contact: req.user.phone,
+            },
+            notify: {
+                sms: true,
+                email: true,
+            },
+            // callback_url: `https://yourdomain.com/payment-success?orderId=${orderData.orderId}`,
+            // callback_method: "get",
+        });
+        //  Get full payment link details
+        const paymentLinkDetails = await razorpay.paymentLink.fetch(razorpayLink.id);
 
+        //  Extract razorpay_order_id
+        const razorpayOrderId = paymentLinkDetails.order_id;
+        const pendingOrder = await Order.create(
+            [{ ...orderData, razorpayPaymentLinkId: razorpayLink.id, razorpayOrderId }],
+            { session }
+        );
 
+        await session.commitTransaction();
 
+        logger.info(`Online payment link created: User - ${userId}, OrderId - ${orderData.orderId}`);
 
-        })
-        const pendingOrder = await Order.create([{ ...orderData, razorpayOrderId: razorpayOrder.id }], { session })
-        logger.info(`Onlie payment initiated : User - ${userId}, orderId- ${orderData.orderId}`)
-        await session.commitTransaction()
-        return res.status(200).json({ success: true, message: "Order initiated", razorpayOrder, order: pendingOrder[0], key: process.env.RAZORPAY_KEY_ID })
+        return res.status(200).json({
+            success: true,
+            message: "Payment link created",
+            paymentLink: razorpayLink.short_url,
+            order: pendingOrder[0],
+        });
     } catch (error) {
-        await session.abortTransaction()
-        logger.error(`Order placement failed : ${error.message}`)
-        return res.status(500).json({ success: false, message: "Interal server error" })
+        await session.abortTransaction();
+        logger.error(`Order placement failed: ${error.message}`);
+        return res.status(500).json({ success: false, message: "Internal server error" });
     } finally {
-        session.endSession()
+        session.endSession();
     }
+};
 
-
-
-
-
-}
 // verify payement
 
 export const verifyRazorpayPayment = async (req, res) => {
@@ -556,3 +554,173 @@ export const updateOrderStatus = async (req, res) => {
 
 
 }
+export const trackOrder = async (req, res) => {
+    try {
+        const { id: orderId } = req.params;
+        const userId = req.user._id;
+
+
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({ success: false, message: "Invalid order ID format" });
+        }
+
+
+        const order = await Order.findById(orderId)
+            .populate("items.productId", "name price images")
+            .populate("shippingAddress")
+            .lean(); // 🔍 read-only boost
+
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+
+        if (order.userId.toString() !== userId.toString()) {
+            logger.warn(`Unauthorized access attempt by ${userId} on order ${orderId}`);
+            return res.status(403).json({ success: false, message: "Unauthorized to access this order" });
+        }
+
+
+        res.status(200).json({
+            success: true,
+            message: "Order tracked successfully",
+            order: {
+                orderId: order.orderId || order._id,
+                orderStatus: order.orderStatus,
+                deliveryDate: order.deliveryDate,
+                totalAmount: order.totalAmount,
+                paymentStatus: order.paymentStatus,
+                paymentMethod: order.paymentMethod,
+                items: order.items,
+                shippingAddress: order.shippingAddress,
+                placedAt: order.createdAt,
+            },
+        });
+
+        logger.info(`Order ${orderId} tracked by user ${userId}`);
+    } catch (error) {
+        logger.error("Error tracking order:", error);
+        res.status(500).json({ success: false, message: "Failed to track order" });
+    }
+};
+// order analyics for admin dashboard
+export const getOrderSummary = async (req, res) => {
+
+    try {
+        const [order, users] = await Promise.all([Order.find({}), User.find({})])
+
+        const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const todayOrders = order.filter(o => new Date(o.createdAt) >= today)
+        res.status(200).json({
+            success: true,
+            totalOrders: orders.length,
+            totalRevenue,
+            totalUsers: users.length,
+            todayOrders: todayOrders.length,
+        });
+
+
+    } catch (error) {
+        console.error("Error in getOrderSummary:", error);
+        res.status(500).json({ success: false, message: "Failed to get summary" });
+    }
+
+}
+export const getSalesTrends = async (req, res) => {
+    try {
+        const trends = await Order.aggregate([
+            {
+                $match: { paymentStatus: "paid" }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    totalSales: { $sum: "$totalAmount" },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        res.status(200).json({ success: true, trends });
+    } catch (error) {
+        console.error("Error in getSalesTrends:", error);
+        res.status(500).json({ success: false, message: "Failed to get trends" });
+    }
+};
+export const getOrderStatusBreakdown = async (req, res) => {
+    try {
+        const result = await Order.aggregate([
+            {
+                $group: {
+                    _id: "$orderStatus",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const breakdown = {};
+        result.forEach(r => breakdown[r._id] = r.count);
+
+        res.status(200).json({ success: true, breakdown });
+    } catch (error) {
+        console.error("Error in getOrderStatusBreakdown:", error);
+        res.status(500).json({ success: false, message: "Failed to get status data" });
+    }
+};
+export const getTopSellingProducts = async (req, res) => {
+    try {
+        const topProducts = await Order.aggregate([
+            { $unwind: "$items" },
+            {
+                $group: {
+                    _id: "$items.productId",
+                    totalSold: { $sum: "$items.quantity" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            { $unwind: "$product" },
+            { $sort: { totalSold: -1 } },
+            { $limit: 5 }
+        ]);
+
+        res.status(200).json({ success: true, topProducts });
+    } catch (error) {
+        console.error("Error in getTopSellingProducts:", error);
+        res.status(500).json({ success: false, message: "Failed to get top products" });
+    }
+};
+export const getCustomerTypes = async (req, res) => {
+    try {
+        const users = await User.find({});
+        const returning = [];
+        const firstTime = [];
+
+        for (let user of users) {
+            const count = await Order.countDocuments({ userId: user._id });
+            if (count > 1) returning.push(user._id);
+            else firstTime.push(user._id);
+        }
+
+        res.status(200).json({
+            success: true,
+            newCustomers: firstTime.length,
+            returningCustomers: returning.length,
+        });
+    } catch (error) {
+        console.error("Error in getCustomerTypes:", error);
+        res.status(500).json({ success: false, message: "Failed to get customer stats" });
+    }
+};
+// invoice generator
+// export const generateInvoice = async () => { }

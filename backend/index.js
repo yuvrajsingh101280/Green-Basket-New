@@ -14,6 +14,7 @@ import productRoute from "../backend/router/productRoutes.js"
 import categoryRotue from "../backend/router/categoryRoutes.js"
 import cartRouter from "../backend/router/cartRoutes.js"
 import orderRotuer from "../backend/router/orderRoutes.js"
+import webhookRouter from "../backend/router/webhookRoutes.js"
 // app instance
 const app = express()
 // port
@@ -23,6 +24,8 @@ const port = process.env.PORT
 
 await connectToDB()
 await connectToClodinary()
+// razorpay-webhook
+app.use("/webhook", webhookRouter)
 // middleware
 app.use(express.json())
 app.use(cors({

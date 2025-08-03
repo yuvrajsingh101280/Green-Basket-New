@@ -89,3 +89,24 @@
 2025-07-19 18:37:50 - [INFO]: Cart cleared for user:6860eef7c9460686b0abeb0c
 2025-07-19 18:53:52 - [INFO]: Cart cleared for user:6860eef7c9460686b0abeb0c
 2025-07-19 18:53:58 - [INFO]: Cart cleared for user:6860eef7c9460686b0abeb0c
+2025-08-03 17:02:00 - [INFO]: User logged in: superadmin@greenbasket.com
+2025-08-03 17:05:02 - [INFO]: product added to cart : User -- 6860eef7c9460686b0abeb0c, product - 686eb14a26f4c085af827ccc
+2025-08-03 17:08:04 - [ERROR]: Order placement failed : Cannot destructure property 'paymentMethod' of 'req.body' as it is undefined.
+2025-08-03 17:15:36 - [INFO]: Address added for user 6860eef7c9460686b0abeb0c
+2025-08-03 17:16:32 - [INFO]: Onlie payment initiated : User - 6860eef7c9460686b0abeb0c, orderId- GRB-20250803-E7ZRSE
+2025-08-03 17:50:19 - [INFO]: Onlie payment initiated : User - 6860eef7c9460686b0abeb0c, orderId- GRB-20250803-97AIYI
+2025-08-03 18:01:08 - [INFO]: Online payment link created: User - 6860eef7c9460686b0abeb0c, OrderId - GRB-20250803-XVBL1W
+2025-08-03 18:15:07 - [INFO]: Online payment link created: User - 6860eef7c9460686b0abeb0c, OrderId - GRB-20250803-NH0TK5
+2025-08-03 18:26:01 - [INFO]: Online payment link created: User - 6860eef7c9460686b0abeb0c, OrderId - GRB-20250803-H0FKL1
+2025-08-03 18:31:26 - [INFO]: COD order placed: User - 6860eef7c9460686b0abeb0c, OrderId - GRB-20250803-5HTHO6
+2025-08-03 20:53:43 - [INFO]: User logged in: superadmin@greenbasket.com
+2025-08-03 20:54:49 - [INFO]: Address added for user 688f7e5bff4c0884575b2ef6
+2025-08-03 20:55:31 - [INFO]: product added to cart : User -- 688f7e5bff4c0884575b2ef6, product - 686eb14a26f4c085af827ccc
+2025-08-03 20:55:40 - [INFO]: COD order placed: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-Z0LZKY
+2025-08-03 20:59:26 - [INFO]: product added to cart : User -- 688f7e5bff4c0884575b2ef6, product - 686eb14a26f4c085af827ccc
+2025-08-03 20:59:34 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-KQMXP5
+2025-08-03 21:22:49 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-D1PRV8
+2025-08-03 22:16:37 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-8YWCXV
+2025-08-03 22:58:56 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-XU9ZMZ
+2025-08-03 23:09:17 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-7DYZEP
+2025-08-03 23:13:05 - [INFO]: Online payment link created: User - 688f7e5bff4c0884575b2ef6, OrderId - GRB-20250803-2KUC8S

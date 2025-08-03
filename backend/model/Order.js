@@ -49,6 +49,8 @@ const OrderSchema = new mongoose.Schema({
     razorpayOrderId: String,
     razorpayPaymentId: String,
     razorpaySignature: String,
+    // ✅ Use this for Payment Links
+    razorpayPaymentLinkId: String,
     shippingAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
     deliveryDate: Date
 
