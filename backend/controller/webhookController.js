@@ -13,6 +13,10 @@ export const handleRazorpayWebhook = async (req, res) => {
     const rawBody = req.body;
     const bodyString = rawBody.toString()
     console.log(" Webhook triggered");
+    // Log for debug
+    logger.info("📦 Raw Body Buffer: " + rawBody);
+    logger.info("📦 Raw Body as String: " + rawBody.toString("utf8"));
+    logger.info("🧾 Received Signature: " + signature);
 
     // ✅ Verify signature
     const expectedSignature = crypto
