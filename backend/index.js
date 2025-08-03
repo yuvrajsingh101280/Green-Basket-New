@@ -51,21 +51,21 @@ app.get("/", (req, res) => {
 })
 // for reseting the uptime
 const url = "https://green-basket-new.onrender.com"
-const interval = 30000
+const interval = 60000
 
 
-// function reloadWebsite() {
-//     axios
-//         .get(url)
-//         .then((res) => {
-//             console.log("Website reloaded");
-//         })
-//         .catch((err) => {
-//             console.log(`Error : ${err.message}`);
-//         });
-// }
+function reloadWebsite() {
+    axios
+        .get(url)
+        .then((res) => {
+            console.log("Website reloaded");
+        })
+        .catch((err) => {
+            console.log(`Error : ${err.message}`);
+        });
+}
 
-// setInterval(reloadWebsite, interval);
+setInterval(reloadWebsite, interval);
 
 app.listen(port, () => {
 
