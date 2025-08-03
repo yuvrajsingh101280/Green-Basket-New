@@ -194,7 +194,7 @@ export const manuallyVerifyPayment = async (req, res) => {
             return res.status(500).json({ success: false, message: "Error updating order" });
         }
     } catch (error) {
-        console.error("❌ Manual payment verify error:", error);
+        console.error(" Manual payment verify error:", error);
         return res.status(500).json({ success: false, message: "Failed to fetch from Razorpay" });
     }
 };

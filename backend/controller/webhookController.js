@@ -11,18 +11,17 @@ export const handleRazorpayWebhook = async (req, res) => {
     console.log(signature)
     // ✅ Razorpay sends raw buffer, not parsed JSON
     const rawBody = req.body;
-    const bodyString = rawBody.toString("utf8");
-
-    console.log("🔔 Webhook triggered");
+    const bodyString = rawBody.toString()
+    console.log(" Webhook triggered");
 
     // ✅ Verify signature
     const expectedSignature = crypto
         .createHmac("sha256", secret)
-        .update(bodyString)
+        .update(rawBody)
         .digest("hex");
     console.log(expectedSignature)
     if (signature !== expectedSignature) {
-        console.log("❌ Invalid signature");
+        console.log("Invalid signature");
         return res.status(400).send("Invalid signature");
     }
 
@@ -30,7 +29,7 @@ export const handleRazorpayWebhook = async (req, res) => {
     const eventBody = JSON.parse(bodyString);
     const event = eventBody.event;
 
-    console.log(`🔔 Razorpay Webhook received: ${event}`);
+    console.log(` Razorpay Webhook received: ${event}`);
 
     if (event === "payment_link.paid") {
         const paymentLinkId = eventBody.payload.payment_link.entity.id;
