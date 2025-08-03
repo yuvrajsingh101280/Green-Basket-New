@@ -6,7 +6,7 @@ import Product from "../model/Product.js"
 import Order from "../model/Order.js"
 import { razorpay } from "../razorpay/razorpayInstance.js"
 import { sendOrderConfirmationSMS, sendSMS } from "../config/twilioClient.js"
-import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
+// import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
 import logger from "../utils/logger.js"
 
 export const placeOrder = async (req, res) => {
