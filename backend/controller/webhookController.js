@@ -1,21 +1,24 @@
 import crypto from "crypto";
 import Order from "../model/Order.js";
 import Cart from "../model/Cart.js";
-import Product from "../model/Product.js"; // don't forget this!
+import Product from "../model/Product.js";
 import logger from "../utils/logger.js";
 import { sendOrderConfirmationSMS } from "../config/twilioClient.js";
 
 export const handleRazorpayWebhook = async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
-    const body = JSON.stringify(req.body);
+
+    // ✅ Razorpay sends raw buffer, not parsed JSON
+    const rawBody = req.body;
+    const bodyString = rawBody.toString("utf8");
 
     logger.info("🔔 Webhook triggered");
-    console.log("🔔 Razorpay Webhook received:", req.body.event);
 
+    // ✅ Verify signature
     const expectedSignature = crypto
         .createHmac("sha256", secret)
-        .update(body)
+        .update(bodyString)
         .digest("hex");
 
     if (signature !== expectedSignature) {
@@ -23,14 +26,17 @@ export const handleRazorpayWebhook = async (req, res) => {
         return res.status(400).send("Invalid signature");
     }
 
-    const event = req.body.event;
+    // ✅ Now safely parse body
+    const eventBody = JSON.parse(bodyString);
+    const event = eventBody.event;
+
+    logger.info(`🔔 Razorpay Webhook received: ${event}`);
 
     if (event === "payment_link.paid") {
-        const paymentLinkId = req.body.payload.payment_link.entity.id;
-        const paymentId = req.body.payload.payment.entity.id;
+        const paymentLinkId = eventBody.payload.payment_link.entity.id;
+        const paymentId = eventBody.payload.payment.entity.id;
 
         logger.info(`✅ Payment received for PaymentLink: ${paymentLinkId}, Payment ID: ${paymentId}`);
-        console.log("✅ PaymentLink paid:", paymentLinkId);
 
         const order = await Order.findOne({ razorpayPaymentLinkId: paymentLinkId });
         if (!order || order.paymentStatus === "paid") {
@@ -58,7 +64,7 @@ export const handleRazorpayWebhook = async (req, res) => {
 
             const deliveryDate = new Date(order.deliveryDate).toLocaleDateString("en-IN");
             await sendOrderConfirmationSMS({
-                phone: req.body.payload.payment.entity.contact,
+                phone: eventBody.payload.payment.entity.contact,
                 orderId: order.orderId,
                 totalAmount: order.totalAmount,
                 deliveryDate,
