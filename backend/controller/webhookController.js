@@ -14,9 +14,9 @@ export const handleRazorpayWebhook = async (req, res) => {
     const bodyString = rawBody.toString()
     // console.log(" Webhook triggered");
     // Log for debug
-    // logger.info("📦 Raw Body Buffer: " + rawBody);
-    // logger.info("📦 Raw Body as String: " + rawBody.toString("utf8"));
-    // logger.info("🧾 Received Signature: " + signature);
+    // logger.info(" Raw Body Buffer: " + rawBody);
+    // logger.info(" Raw Body as String: " + rawBody.toString("utf8"));
+    // logger.info(" Received Signature: " + signature);
 
     // ✅ Verify signature
     const expectedSignature = crypto
@@ -39,11 +39,11 @@ export const handleRazorpayWebhook = async (req, res) => {
         const paymentLinkId = eventBody.payload.payment_link.entity.id;
         const paymentId = eventBody.payload.payment.entity.id;
 
-        console.log(`✅ Payment received for PaymentLink: ${paymentLinkId}, Payment ID: ${paymentId}`);
+        console.log(`Payment received for PaymentLink: ${paymentLinkId}, Payment ID: ${paymentId}`);
 
         const order = await Order.findOne({ razorpayPaymentLinkId: paymentLinkId });
         if (!order || order.paymentStatus === "paid") {
-            console.log("ℹ️ Order already updated or not found");
+            console.log("ℹ Order already updated or not found");
             return res.status(200).send("Already updated");
         }
 
@@ -75,17 +75,17 @@ export const handleRazorpayWebhook = async (req, res) => {
             });
 
             await session.commitTransaction();
-            console.log(`✅ Order ${order.orderId} updated as paid and SMS sent`);
+            console.log(`Order ${order.orderId} updated as paid and SMS sent`);
             res.status(200).json({ success: true, message: "Payment status updated" });
         } catch (error) {
             await session.abortTransaction();
-            console.log("❌ Error updating order from webhook:", error);
+            console.log("Error updating order from webhook:", error);
             res.status(500).json({ success: false, message: "DB update failed" });
         } finally {
             session.endSession();
         }
     } else {
-        console.log(`ℹ️ Ignored webhook event: ${event}`);
+        console.log(` Ignored webhook event: ${event}`);
         res.status(200).send("Event ignored");
     }
 };

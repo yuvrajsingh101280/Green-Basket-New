@@ -8,6 +8,7 @@ import { razorpay } from "../razorpay/razorpayInstance.js"
 import { sendOrderConfirmationSMS, sendSMS } from "../config/twilioClient.js"
 // import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
 import logger from "../utils/logger.js"
+import User from "../model/User.js"
 
 export const placeOrder = async (req, res) => {
     const session = await mongoose.startSession();
@@ -266,7 +267,7 @@ export const manuallyVerifyPayment = async (req, res) => {
 //     }
 
 // }
-// get user orders
+// get user orders(user)
 export const getMyOrder = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -424,7 +425,7 @@ export const getOrderById = async (req, res) => {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        // ✅ Role-based Access Control (RBAC)
+        // Role-based Access Control (RBAC)
         if (
             order.userId._id.toString() !== user._id.toString() &&
             user.role !== "admin" &&
@@ -433,7 +434,7 @@ export const getOrderById = async (req, res) => {
             return res.status(403).json({ success: false, message: "Access denied" });
         }
 
-        // ✅ Format response
+        // Format response
         const formattedOrder = {
             _id: order._id,
             orderId: order.orderId,
@@ -674,12 +675,12 @@ export const trackOrder = async (req, res) => {
 export const getOrderSummary = async (req, res) => {
 
     try {
-        const [order, users] = await Promise.all([Order.find({}), User.find({})])
+        const [orders, users] = await Promise.all([Order.find({}), User.find({})])
 
         const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        const todayOrders = order.filter(o => new Date(o.createdAt) >= today)
+        const todayOrders = orders.filter(o => new Date(o.createdAt) >= today)
         res.status(200).json({
             success: true,
             totalOrders: orders.length,
@@ -719,17 +720,25 @@ export const getSalesTrends = async (req, res) => {
 };
 export const getOrderStatusBreakdown = async (req, res) => {
     try {
+        // Group orders by status and collect order IDs for each status
         const result = await Order.aggregate([
             {
                 $group: {
                     _id: "$orderStatus",
-                    count: { $sum: 1 }
+                    count: { $sum: 1 },
+                    orders: { $push: { orderId: "$orderId", _id: "$_id" } }
                 }
             }
         ]);
 
+        // Format breakdown as { status: { count, orders: [...] } }
         const breakdown = {};
-        result.forEach(r => breakdown[r._id] = r.count);
+        result.forEach(r => {
+            breakdown[r._id] = {
+                count: r.count,
+                orders: r.orders
+            };
+        });
 
         res.status(200).json({ success: true, breakdown });
     } catch (error) {
