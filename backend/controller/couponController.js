@@ -3,7 +3,7 @@
 
 import Coupon from "../model/Coupon.js"
 import logger from "../utils/logger.js"
-
+// Admin
 export const createCoupon = async (req, res) => {
 
     try {
@@ -76,6 +76,68 @@ export const updateCoupon = async (req, res) => {
     } catch (error) {
         logger.error("updateCoupon error", error);
         res.status(500).json({ success: false, message: "Internal server error" });
+    }
+
+
+}
+export const toggleCouponActive = async (req, res) => {
+
+    try {
+
+        const { id } = req.params
+        const coupon = await Coupon.findById(id)
+        if (!coupon) {
+
+            return res.status(400).json({ success: false, message: "Coupon not found" })
+
+        }
+        coupon.isActive = !coupon.isActive
+        await coupon.save()
+
+        return res.status(200).json({ success: true, message: "coupon status updated", isActive: coupon.isActive })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, message: "Internal sever error" })
+    }
+
+
+}
+export const listCoupons = async (req, res) => {
+
+    try {
+        const {
+            page = 1,
+            limit = 20,
+            active, // "true"/"false"
+            q,      // search by code
+            sort = "desc", // createdAt
+        } = req.query;
+
+        const currentPage = Math.max(parseInt(page), 1);
+        const perPage = Math.max(parseInt(limit), 1);
+        const skip = (currentPage - 1) * perPage;
+        const now = new Date();
+
+        const query = {};
+        if (active === "true") query.isActive = true;
+        if (active === "false") query.isActive = false;
+        if (q) query.code = { $regex: q.trim(), $options: "i" };
+
+        const [items, total] = await Promise.all([
+            Coupon.find(query).sort({ createdAt: sort === "asc" ? 1 : -1 }).skip(skip).limit(perPage),
+            Coupon.countDocuments(query),
+        ]);
+
+        const summary = {
+            activeCount: await Coupon.countDocuments({ isActive: true, expiryDate: { $gt: now } }),
+            expiredCount: await Coupon.countDocuments({ expiryDate: { $lte: now } }),
+        };
+
+        res.status(200).json({ page: currentPage, limit: perPage, total, totalPages: Math.ceil(total / perPage), summary, items });
+    } catch (err) {
+        console.error("listCoupons error:", err);
+        res.status(500).json({ message: "Failed to list coupons" });
     }
 
 
