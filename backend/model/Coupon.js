@@ -22,7 +22,7 @@ const couponSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-couponSchema.index({ code: 1 }, { unique: true });
+// couponSchema.index({ code: 1 }, { unique: true });
 
 couponSchema.methods.isExpired = function () {
     return new Date() > this.expiryDate;

@@ -53,3 +53,30 @@ export const createCoupon = async (req, res) => {
 
 
 }
+export const updateCoupon = async (req, res) => {
+
+    try {
+        const { id } = req.params
+        const updates = { ...req.body }
+
+        if (updates.code) {
+
+            updates.code = String(updates.code).toUpperCase().trim()
+
+        }
+        const existingCoupon = await Coupon.findById(id)
+        if (!existingCoupon) {
+            return res.status(404).json({ success: false, message: "Coupon not found" });
+        }
+
+        const coupon = await Coupon.findByIdAndUpdate(id, { $set: updates }, { new: true })
+        logger.info(`Coupon updated successfully- ${coupon._id}`)
+        return res.status(200).json({ success: true, message: "Coupon update successfully", coupon: coupon })
+
+    } catch (error) {
+        logger.error("updateCoupon error", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+
+
+}
