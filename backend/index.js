@@ -15,6 +15,8 @@ import categoryRotue from "../backend/router/categoryRoutes.js"
 import cartRouter from "../backend/router/cartRoutes.js"
 import orderRotuer from "../backend/router/orderRoutes.js"
 import webhookRouter from "../backend/router/webhookRoutes.js"
+import reviewRoutes from "../backend/router/reviewRoutes.js"
+import wishlistRoutes from "../backend/router/wishlistRoutes.js"
 // app instance
 const app = express()
 // port
@@ -44,7 +46,8 @@ app.use("/api/product", productRoute)
 app.use("/api/category", categoryRotue)
 app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRotuer)
-
+app.use("/api/reviews", reviewRoutes)
+app.use("/api/wishlist", wishlistRoutes)
 app.get("/", (req, res) => {
     res.send("Api is live")
 

@@ -37,6 +37,7 @@ const ProductSchema = new mongoose.Schema({
         min: 0,
         max: 5
     },
+    ratingsCount: { type: Number, default: 0 },
     images: [{
 
         url: String,
