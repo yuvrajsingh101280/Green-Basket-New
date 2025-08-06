@@ -142,3 +142,20 @@ export const listCoupons = async (req, res) => {
 
 
 }
+export const deleteCoupon = async (req, res) => {
+
+    try {
+        const { id } = req.params
+        const coupon = await Coupon.findById(id)
+        if (!coupon) {
+            return res.status(400).json({ success: false, message: "coupon not found " })
+
+        }
+        await Coupon.findByIdAndDelete(id)
+        return res.status(200).json({ success: true, message: "coupon deleted successfully" })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, message: "Internal server error" })
+    }
+
+}
