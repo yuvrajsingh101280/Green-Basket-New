@@ -9,6 +9,7 @@ import { sendOrderConfirmationSMS, sendSMS } from "../config/twilioClient.js"
 // import { isSignatureValid } from "../config/verifyRazorpaySignature.js"
 import logger from "../utils/logger.js"
 import User from "../model/User.js"
+import Coupon from "../model/Coupon.js"
 
 export const placeOrder = async (req, res) => {
     const session = await mongoose.startSession();
@@ -16,7 +17,7 @@ export const placeOrder = async (req, res) => {
 
     try {
         const userId = req.user._id;
-        const { paymentMethod, addressId } = req.body;
+        const { paymentMethod, addressId, couponCode } = req.body;
 
         if (!paymentMethod || !["cod", "online"].includes(paymentMethod)) {
             return res.status(400).json({ success: false, message: "Invalid payment method" });
@@ -31,6 +32,36 @@ export const placeOrder = async (req, res) => {
         if (!cart || cart.items.length <= 0) {
             return res.status(400).json({ success: false, message: "Cart is empty" });
         }
+        // coupon
+        let discountAmount = 0;
+        let appliedCoupon = null;
+        if (couponCode) {
+            const coupon = await Coupon.findOne({ code: couponCode.toUpperCase(), isActive: true });
+            if (!coupon) {
+                return res.status(400).json({ success: false, message: "Invalid or expired coupon" });
+            }
+
+            if (new Date(coupon.expiryDate) < new Date()) {
+                return res.status(400).json({ success: false, message: "Coupon has expired" });
+            }
+
+            // Calculate cart total BEFORE discount
+            let subtotal = 0;
+            for (const item of cart.items) {
+                subtotal += item.productId.price * item.quantity;
+            }
+
+            if (subtotal < coupon.minOrderAmount) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Minimum order amount for this coupon is ₹${coupon.minOrderAmount}`,
+                });
+            }
+
+            // Calculate discount
+            discountAmount = Math.min((subtotal * coupon.discountPercentage) / 100, coupon.maxDiscount);
+            appliedCoupon = coupon;
+        }
 
         // calculate total
         let totalAmount = 0;
@@ -41,11 +72,16 @@ export const placeOrder = async (req, res) => {
             }
             totalAmount += product.price * item.quantity;
         }
+        totalAmount = totalAmount - discountAmount
+        if (totalAmount < 0) totalAmount = 0;
+
 
         // create base order data
         const orderData = {
             userId,
             orderId: generateOrderId(),
+            appliedCoupon: appliedCoupon?.appliedCoupon || null,
+            discountAmount: discountAmount,
             items: cart.items.map((item) => ({
                 productId: item.productId._id,
                 price: item.productId.price,
@@ -56,6 +92,7 @@ export const placeOrder = async (req, res) => {
             paymentStatus: paymentMethod === "cod" ? "paid" : "pending",
             shippingAddress: addressId,
             deliveryDate: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes from now
+
         };
 
         if (paymentMethod === "cod") {

@@ -11,6 +11,7 @@ const OrderSchema = new mongoose.Schema({
 
 
     orderId: String,
+    appliedCouponCode: String,
     items: [
 
 
@@ -24,7 +25,7 @@ const OrderSchema = new mongoose.Schema({
 
 
     ],
-
+    discountAmount: Number,
     totalAmount: { type: Number, required: true },
     orderStatus: {
 
