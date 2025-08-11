@@ -1,9 +1,8 @@
-
-import axionIntance from "./axios"
+import axios from "axios"
 
 export const userData = async () => {
 
-    const response = await axionIntance.get("/api/user/data")
+    const response = await axios.get("http://localhost:8000/api/user/data", { withCredentials: true })
     console.log(response)
     return response.data
 }
