@@ -31,32 +31,10 @@ await connectToClodinary()
 app.use("/webhook", webhookRouter)
 // middleware
 app.use(express.json())
-const allowedOrigins = [
-    process.env.CLIENT_URL,      // http://localhost:5173
-    process.env.FROTNEND_URL,    // https://green-basket-new-hncq.vercel.app
-];
-
-app.use(
-    cors({
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
-);
-
-// Handle preflight requests
-app.options("*", cors({
-    origin: allowedOrigins,
-    credentials: true
+app.use(cors({
+    origin: '*',
+    credentials: true //
 }));
-
 app.use(cookieParser())
 // routers
 
