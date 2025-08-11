@@ -9,6 +9,18 @@
   ],
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/site.webmanifest",
+      "dest": "/site.webmanifest"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
