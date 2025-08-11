@@ -151,7 +151,7 @@ const Navbar = () => {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: "-100%", opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="text-xl text-[#6A6767] absolute"
+                  className="text-lg text-[#6A6767] absolute"
                 >
                   {searchPhrases[phraseIndex]}
                 </motion.h2>
