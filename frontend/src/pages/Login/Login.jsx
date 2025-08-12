@@ -6,7 +6,8 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { AppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
-
+import { IoEye } from "react-icons/io5";
+import { IoEyeOff } from "react-icons/io5";
 import { loginEmail, loginOTP, loginViaOTP } from "../../../api/authApi";
 
 const Login = () => {
@@ -24,7 +25,9 @@ const Login = () => {
     email: "",
     password: "",
   });
-
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   const { loginUser } = useContext(AppContext);
 
   const LoginViaPhone = () => {
@@ -209,16 +212,26 @@ const Login = () => {
                   <label htmlFor="password" className="mb-1 font-medium">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={form.password}
-                    onChange={(e) =>
-                      setForm({ ...form, password: e.target.value })
-                    }
-                    className="outline-none border-none py-2 px-4 bg-[#D2F5D2] rounded-md"
-                    placeholder="Enter your Password"
-                  />
+                  <div className="flex items-center justify-between relative">
+                    {" "}
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={form.password}
+                      onChange={(e) =>
+                        setForm({ ...form, password: e.target.value })
+                      }
+                      className="outline-none border-none w-full py-2 px-4 bg-[#D2F5D2] rounded-md"
+                      placeholder="Enter your Password"
+                    />
+                    <div
+                      onClick={handleShowPassword}
+                      className="absolute right-5 w-2"
+                    >
+                      {" "}
+                      {showPassword ? <IoEye /> : <IoEyeOff />}
+                    </div>
+                  </div>
                 </div>
 
                 <button

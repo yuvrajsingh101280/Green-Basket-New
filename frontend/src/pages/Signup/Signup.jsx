@@ -1,30 +1,59 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { assets } from "../../assets/assets";
 import { motion } from "framer-motion";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import toast from "react-hot-toast";
 import { signup } from "../../../api/authApi";
 import { AppContext } from "../../context/AppContext";
+import { IoEye } from "react-icons/io5";
+import { IoEyeOff } from "react-icons/io5";
+
+// Image preload hook
+const useImagePreload = (srcArray) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let loadedCount = 0;
+    srcArray.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === srcArray.length) setLoaded(true);
+      };
+    });
+  }, [srcArray]);
+
+  return loaded;
+};
 
 const Signup = () => {
-  // set all the states
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   const navigate = useNavigate();
   const { signupUser } = useContext(AppContext);
 
-  // function to handle the create account
+  // Preload main images before animation
+  const imagesLoaded = useImagePreload([
+    assets.deliveryboy,
+    assets.grocery_image1,
+  ]);
+
   const handleCreateAccont = async (e) => {
     e.preventDefault();
-
     const { email, name, password, phone } = form;
     let toastId;
+
     try {
       if (!phone || !email || !name || !password) {
         toast.error("All fields are required");
@@ -32,10 +61,8 @@ const Signup = () => {
       }
       toastId = toast.loading("Creating account....");
       const res = await signup(form);
-
       const { user } = res;
       signupUser(user);
-
       toast.success(res.message);
       navigate("/verify-page");
     } catch (error) {
@@ -45,41 +72,44 @@ const Signup = () => {
       if (toastId) toast.dismiss(toastId);
     }
   };
+
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-[#D2F5D2]">
       {/* Left column */}
       <div className="w-1/2 md:flex hidden bg-[#5BE45B] justify-center items-center relative">
-        {/* Text */}
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 0.5 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="absolute top-16 right-12 text-black opacity-[56%] font-extrabold text-7xl leading-snug"
-        >
-          <p>Get</p>
-          <p>Delivery</p>
-          <p>At</p>
-          <p>Doorstep</p>
-        </motion.div>
+        {imagesLoaded && (
+          <>
+            <motion.div
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 0.5 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="absolute top-16 right-12 text-black opacity-[56%] font-extrabold text-7xl leading-snug"
+            >
+              <p>Get</p>
+              <p>Delivery</p>
+              <p>At</p>
+              <p>Doorstep</p>
+            </motion.div>
 
-        {/* Image */}
-        <motion.div
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="w-[904px] h-[730px] absolute top-0 right-0 overflow-hidden"
-        >
-          <img
-            src={assets.deliveryboy}
-            alt="delivery boy"
-            className="pt-0 pb-0 pl-0 pr-0"
-          />
-        </motion.div>
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.6 }}
+              className="w-[904px] h-[730px] absolute top-0 right-0 overflow-hidden"
+            >
+              <img
+                src={assets.deliveryboy}
+                alt="delivery boy"
+                className="pt-0 pb-0"
+                loading="eager"
+              />
+            </motion.div>
+          </>
+        )}
       </div>
 
-      {/* Right column (form) */}
+      {/* Right column */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-6 relative overflow-hidden">
-        {/* Heading */}
         <div className="flex flex-col items-center gap-2 py-2 px-2 mb-3 text-center">
           <h1 className="text-[44px] opacity-[56%] font-bold">Signup</h1>
           <p className="md:text-[24px] font-light text-md text-gray-800">
@@ -87,14 +117,14 @@ const Signup = () => {
           </p>
         </div>
 
-        {/* Form */}
         <motion.form
           onSubmit={handleCreateAccont}
           initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={imagesLoaded ? { y: 0, opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           className="bg-white p-6 rounded-xl shadow-md flex flex-col gap-4 w-full max-w-md"
         >
+          {/* Inputs */}
           <div className="flex flex-col">
             <label htmlFor="name" className="mb-1 font-medium">
               Full Name
@@ -117,9 +147,7 @@ const Signup = () => {
               type="email"
               id="email"
               value={form.email}
-              onChange={(e) => {
-                setForm({ ...form, email: e.target.value });
-              }}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="outline-none border-none py-2 px-4 bg-[#D2F5D2] rounded-md"
               placeholder="Enter your email"
               required
@@ -129,15 +157,25 @@ const Signup = () => {
             <label htmlFor="password" className="mb-1 font-medium">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="outline-none border-none py-2 px-4 bg-[#D2F5D2] rounded-md"
-              placeholder="Enter your password"
-              required
-            />
+            <div className="flex items-center justify-between relative">
+              {" "}
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className="outline-none border-none py-2 px-4 bg-[#D2F5D2] rounded-md w-full"
+                placeholder="Enter your password"
+                required
+              />
+              <div
+                onClick={handleShowPassword}
+                className="absolute right-5 w-2"
+              >
+                {" "}
+                {showPassword ? <IoEye /> : <IoEyeOff />}
+              </div>
+            </div>
           </div>
           <div className="flex flex-col">
             <label htmlFor="number" className="mb-1 font-medium">
@@ -148,10 +186,7 @@ const Signup = () => {
               value={form.phone}
               onChange={(phone) => setForm({ ...form, phone })}
               placeholder="Enter your Mobile Number"
-              inputProps={{
-                name: "phone",
-                required: true,
-              }}
+              inputProps={{ name: "phone", required: true }}
               inputStyle={{
                 backgroundColor: "#D2F5D2",
                 width: "100%",
@@ -159,10 +194,7 @@ const Signup = () => {
                 borderRadius: "0.375rem",
                 padding: "0.5rem 1rem",
               }}
-              buttonStyle={{
-                backgroundColor: "#D2F5D2",
-                border: "none",
-              }}
+              buttonStyle={{ backgroundColor: "#D2F5D2", border: "none" }}
               required
             />
           </div>
@@ -185,17 +217,18 @@ const Signup = () => {
           </div>
         </motion.form>
 
-        {/* Animated grocery image */}
+        {/* Grocery image (lazy loaded) */}
         <motion.div
           className="absolute -right-11 -bottom-3 hidden md:block"
           animate={{ y: [0, -10, 0] }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-          <img src={assets.grocery_image1} alt="" className="w-54 h-54" />
+          <img
+            src={assets.grocery_image1}
+            alt=""
+            className="w-54 h-54"
+            loading="lazy"
+          />
         </motion.div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { sendOtp, verifyOtp } from "../../../api/authApi";
 import useUserStore from "../../store/store";
 import { useNavigate } from "react-router-dom";
+import { assets } from "../../assets/assets";
 
 const VerifyPage = () => {
   const [otpSent, setOtpSent] = useState(false);
@@ -57,10 +58,23 @@ const VerifyPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-[#F0FFF0] px-4">
+    <div
+      className="flex flex-col items-center justify-center h-screen  px-4"
+      style={{
+        backgroundImage: `url(${assets.verify_image})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Toaster position="top-center" />
-      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-4 text-gray-800">
+      <div
+        className="border border-green-300 bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-md"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)", // slight transparent white
+          border: "1px solid rgba(255, 255, 255, 0.3)", // soft border
+        }}
+      >
+        <h1 className="text-2xl font-bold text-center mb-4 text-black">
           Verify OTP
         </h1>
 
@@ -74,13 +88,13 @@ const VerifyPage = () => {
         ) : (
           <>
             <div className="mt-4">
-              <label className="block text-gray-700 mb-2">Enter OTP</label>
+              <label className="block text-white mb-2">Enter OTP</label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 placeholder="Enter OTP"
-                className="w-full bg-[#F0FFF0] p-2 rounded-lg border border-gray-300 outline-none"
+                className="w-full bg-white/20 text-white placeholder-white/70 p-2 rounded-lg border border-white/30 outline-none"
               />
             </div>
 
