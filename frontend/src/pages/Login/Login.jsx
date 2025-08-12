@@ -17,6 +17,7 @@ const Login = () => {
   const [resendAvailable, setResendAvailable] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [otp, setOtp] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const [form, setForm] = useState({

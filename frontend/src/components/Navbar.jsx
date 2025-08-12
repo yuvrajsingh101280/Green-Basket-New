@@ -130,7 +130,7 @@ const Navbar = () => {
       </div>
 
       {/* DESKTOP NAVBAR */}
-      <div className="bg-white h-[70px] w-[95%] mx-auto mt-6 rounded-lg shadow-md items-center p-4 justify-evenly hidden md:flex">
+      <div className="bg-white h-[70px] w-[95%] ml-8 mt-6 rounded-lg shadow-md items-center p-4 justify-evenly hidden fixed md:flex">
         <div className="border-r-1 border-gray-300 pr-1 cursor-pointer">
           <img src={assets.logo1} alt="logo" className="w-30" />
         </div>
