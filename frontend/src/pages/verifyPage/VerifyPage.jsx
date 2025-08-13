@@ -59,7 +59,7 @@ const VerifyPage = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen  px-4"
+      className="flex flex-col items-center justify-center h-screen  relative px-4"
       style={{
         backgroundImage: `url(${assets.verify_image})`,
         backgroundSize: "cover",
@@ -88,19 +88,18 @@ const VerifyPage = () => {
         ) : (
           <>
             <div className="mt-4">
-              <label className="block text-white mb-2">Enter OTP</label>
+              <label className="block text-black mb-2">Enter OTP</label>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter OTP"
-                className="w-full bg-white/20 text-white placeholder-white/70 p-2 rounded-lg border border-white/30 outline-none"
+                className="w-full bg-white/20 text-black placeholder-white/70 p-2 rounded-lg border border-white/30 outline-none"
               />
             </div>
 
             <button
               onClick={handleVerify}
-              className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition"
+              className="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-600 transition"
             >
               Verify
             </button>
@@ -118,6 +117,9 @@ const VerifyPage = () => {
             </button>
           </>
         )}
+      </div>
+      <div className="logo hidden sm:block absolute top-1 left-0">
+        <img src={assets.logo1} alt="" />
       </div>
     </div>
   );
