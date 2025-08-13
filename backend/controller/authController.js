@@ -2,7 +2,7 @@ import User from "../model/User.js"
 import bcrypt, { genSalt } from "bcryptjs"
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js"
 
-import { sendOTP, verifyOTP } from "../config/twilioClient.js"
+import { sendOTP, sendSMS, verifyOTP } from "../config/twilioClient.js"
 
 import logger from "../utils/logger.js"
 
@@ -57,12 +57,14 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
         // random avatar
-        const seed = `${name}-${Math.floor(Math.random() * 10000)}`;
-        const randomAvatar = `https://api.dicebear.com/7.x/lorelei-neutral/svg?seed=${encodeURIComponent(seed)}`;
 
+        // random avatar using the full name
+        const encodedName = encodeURIComponent(name.trim());
+        const randomAvatar = `https://avatar.iran.liara.run/username?username=${encodedName}`;
         const newUser = await User.create({ name, email, password: hashedPassword, phone, profilePic: randomAvatar })
 
         generateTokenAndSetCookie(newUser._id, res)
+
         logger.info(`User Registered Successfully - ${newUser.email}`)
         res.status(200).json({ success: true, message: "User created but not verified . Please verify with otp", user: { ...newUser._doc, password: undefined } })
 
@@ -123,6 +125,7 @@ export const verification = async (req, res) => {
         user.isVerified = true
         await user.save()
         generateTokenAndSetCookie(user._id, res)
+        await sendSMS(formattedPhone, `Welcome ${user.name} to Green Basket - Shop your daily grocerry items and get delivered in 15 minutes`)
         logger.info(`User verified successfully: ${user.email}`);
         res.status(200).json({
             success: true, message: "Verified successfully", user: {
