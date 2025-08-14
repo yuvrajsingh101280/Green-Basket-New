@@ -51,7 +51,7 @@ const Navbar = () => {
   return (
     <div className="w-full">
       {/* Mobile Topbar */}
-      <div className="md:hidden w-full bg-white shadow-md fixed top-0 left-0 z-50 flex items-center justify-between px-4 py-3">
+      <div className="md:hidden w-full bg-white shadow-md  top-0 left-0 z-50 flex items-center fixed justify-between px-4 py-3">
         <img src={assets.logo1} alt="logo" className="w-24" />
         <div className="flex items-center gap-3 relative">
           {/* Cart Icon */}
@@ -107,7 +107,6 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
       {/* Mobile Search Bar */}
       <div className="md:hidden mt-[70px] px-4 py-3">
         <div className="h-12 w-full bg-[#D2F5D2] flex items-center pl-4 pr-4 rounded-2xl gap-4 cursor-text">
@@ -128,9 +127,8 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
       {/* DESKTOP NAVBAR */}
-      <div className="bg-white h-[70px] w-[95%] ml-8 mt-6 rounded-lg shadow-md items-center p-4 justify-evenly hidden fixed md:flex">
+      <div className="bg-white h-[70px] w-[95%] ml-8 mt-6 rounded-lg shadow-md items-center p-4 justify-evenly hidden sticky  md:flex">
         <div className="border-r-1 border-gray-300 pr-1 cursor-pointer">
           <img src={assets.logo1} alt="logo" className="w-30" />
         </div>
@@ -242,7 +240,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
       {/* Mobile Sidebar (Only if logged in) */}
       <AnimatePresence>
         {user && showSidebar && (
