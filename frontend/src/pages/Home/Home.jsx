@@ -5,7 +5,7 @@ import HeroSection from "../../components/HeroSection";
 const Home = () => {
   const { user, isAuthenticated } = useContext(AppContext);
 
-  return <div>sdd</div>;
+  return <div><HeroSection/></div>;
 };
 
 export default Home;

@@ -13,10 +13,12 @@ import profile from "./profile.png"
 import order_icon from "./order_icon.png"
 import wishlist_icon from "./wishlist_icon.png"
 import setting from "./setting.png"
-import hero from "./Hero_image.png"
+import hero1 from "./Hero_image.png"
 import verify_image from "./verify-image.jpg"
+import hero3 from "./hero3.png"
 export const assets = {
     verify_image,
+    hero3,
     logo1,
     logo2,
     cart,
@@ -31,7 +33,7 @@ export const assets = {
     profile,
     order_icon,
     wishlist_icon,
-    setting, hero
+    setting, hero1
 
 
 

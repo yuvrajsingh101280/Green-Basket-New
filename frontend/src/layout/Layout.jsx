@@ -5,10 +5,10 @@ import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 const Layout = ({ children }) => {
   return (
-    <div>
+    <div className="w-full h-screen">
       <Navbar />
       <ScrollToTop />
-      <div className="min-h-screen ">
+      <div className=" ">
         <Outlet />
       </div>
       <Footer />
