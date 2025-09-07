@@ -1,5 +1,5 @@
 import React from "react";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 
 const categories = [
   { name: "Fruits", image: assets.fruit },
@@ -16,7 +16,12 @@ const categories = [
   { name: "Masala , Oil & more ", image: assets.masala },
   { name: "Sauces and Spread", image: assets.sauce },
   { name: "Chicken , meat &  Fish", image: assets.meat },
-  { name: "Chicken , meat &  Fish", image: assets.meat },
+  { name: "Organic and healthy living", image: assets.organic },
+  { name: "Baby Care", image: assets.baby_care },
+  { name: "Pharma & Wellness", image: assets.medicine },
+  { name: "Cleaning Essentials", image: assets.detergent },
+  { name: "Home and Offices", image: assets.home },
+  { name: "Personal Care", image: assets.Personal_Care },
 ];
 
 const CategorySection = () => {
@@ -27,7 +32,7 @@ const CategorySection = () => {
       </h2>
 
       {/* Responsive grid: 2 cols mobile, 3 tablet, 10 desktop */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-10 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-10 gap-4">
         {categories.map((category, index) => (
           <div
             key={index}

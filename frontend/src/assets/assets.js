@@ -32,8 +32,39 @@ import atta from "./atta.webp"
 import masala from "./Masala.png"
 import sauce from "./sauce.webp"
 import meat from "./meat.png"
-import oranic from "./Organic.avif"
+import organic from "./Organic.avif"
+import baby_care from "./baby_care.png"
+import medicine from "./medicine.png"
+import detergent from "./detergent.png"
+import home from "./home.png"
+import Personal_Care from "./Personal_Care.png"
+import amul from "./amul.png"
+import pepsi from "./pepsi.png"
+import nestle from "./nestle.png"
+import britannia from "./britannia.png"
+import tata from "./tata.png"
+import dabur from "./dabur.png"
+import coke from "./coke.png"
+import hershey from "./hershey.png"
+import maggi from "./maggi.png"
+import parle from "./parle.png"
 export const assets = {
+    parle,
+    maggi,
+    hershey,
+    coke,
+    dabur,
+    tata,
+    britannia,
+    nestle,
+    pepsi,
+    amul,
+    Personal_Care,
+    home,
+    detergent,
+    medicine,
+    baby_care,
+    organic,
     meat,
     sauce,
     masala,
