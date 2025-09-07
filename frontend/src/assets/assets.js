@@ -18,7 +18,36 @@ import verify_image from "./verify-image.jpg"
 import hero3 from "./hero3.png"
 import fruits from "./fruit.png"
 import vegetables from "./vegetables.png"
+import fruit from "./fruit_category.png"
+import vegetable from "./vegetable_category.png"
+import paan from "./paan.png"
+import coldDrink from "./cold_dring.png"
+import snacks from "./snacks.png"
+import breakfast from "./breakfast.png"
+import iceCream from "./ice-cream.png"
+import oreo from "./oreo.png"
+import coffee from "./coffee.png"
+import bakery from "./bread.webp"
+import atta from "./atta.webp"
+import masala from "./Masala.png"
+import sauce from "./sauce.webp"
+import meat from "./meat.png"
+import oranic from "./Organic.avif"
 export const assets = {
+    meat,
+    sauce,
+    masala,
+    atta,
+    bakery,
+    coffee,
+    oreo,
+    iceCream,
+    breakfast,
+    snacks,
+    coldDrink,
+    paan,
+    vegetable,
+    fruit,
     vegetables,
     fruits,
     verify_image,
