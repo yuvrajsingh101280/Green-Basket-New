@@ -1,9 +1,11 @@
 import dotenv from "dotenv"
-
 import twilio from "twilio"
 dotenv.config()
-const client = twilio(process.env.TWILIO_ACCOUNT_SSID, process.env.TWILIO_AUTH_TOKEN)
-
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+client.api.accounts(process.env.TWILIO_ACCOUNT_SID)
+    .fetch()
+    .then(acc => console.log("✅ Twilio Auth Success:", acc.friendlyName))
+    .catch(err => console.error("❌ Twilio Auth Failed:", err.message));
 
 // function to send otp
 
