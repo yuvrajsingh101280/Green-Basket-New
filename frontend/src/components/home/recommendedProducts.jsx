@@ -59,10 +59,10 @@ const RecommendedProductsSection = () => {
     <section className="px-6 py-10 bg-white">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-extrabold text-gray-800">
+        <h2 className="text-3xl font-extrabold text-[#2a6d1b]">
           Recommended For You
         </h2>
-        <button className="text-green-600 font-semibold hover:underline">
+        <button className="text-[#39841e] font-semibold hover:underline">
           View All
         </button>
       </div>
@@ -72,18 +72,18 @@ const RecommendedProductsSection = () => {
         {recommendedProducts.map((product) => (
           <div
             key={product.id}
-            className="min-w-[200px] md:min-w-0 bg-white rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 p-4 flex flex-col relative cursor-pointer"
+            className="min-w-[200px] md:min-w-0 bg-white rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 p-4 flex flex-col relative cursor-pointer border border-[#e5e5e5]"
           >
             {/* Badge */}
             {product.badge && (
-              <span className="absolute top-3 left-3 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-lg">
+              <span className="absolute top-3 left-3 bg-[#c99443] text-white text-xs font-bold px-2 py-1 rounded-lg">
                 {product.badge}
               </span>
             )}
 
             {/* Discount */}
             {product.oldPrice > product.price && (
-              <span className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+              <span className="absolute top-3 right-3 bg-[#c86404] text-white text-xs font-bold px-2 py-1 rounded-lg">
                 Save ₹{product.oldPrice - product.price}
               </span>
             )}
@@ -98,18 +98,20 @@ const RecommendedProductsSection = () => {
             </div>
 
             {/* Product Info */}
-            <h3 className="text-sm sm:text-base font-semibold line-clamp-2 mb-2">
+            <h3 className="text-sm sm:text-base font-semibold line-clamp-2 mb-2 text-[#135e07]">
               {product.name}
             </h3>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-lg font-bold">₹{product.price}</span>
+              <span className="text-lg font-bold text-[#2a6d1b]">
+                ₹{product.price}
+              </span>
               <span className="text-sm line-through text-gray-400">
                 ₹{product.oldPrice}
               </span>
             </div>
 
             {/* Add to Cart Button */}
-            <button className="mt-auto bg-green-600 hover:bg-green-700 text-white rounded-xl py-2 px-4 flex items-center justify-center gap-2">
+            <button className="mt-auto bg-[#5c9c3c] hover:bg-[#39841e] text-white rounded-xl py-2 px-4 flex items-center justify-center gap-2">
               <ShoppingCart size={18} />
               Add
             </button>

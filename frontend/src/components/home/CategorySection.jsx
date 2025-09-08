@@ -11,7 +11,7 @@ const categories = [
   { name: "Sweet Tooth", image: assets.iceCream },
   { name: "Biscuits", image: assets.oreo },
   { name: "Tea and Coffee", image: assets.coffee },
-  { name: "Bakery", image: assets.bakery }, // add a 10th category if needed
+  { name: "Bakery", image: assets.bakery },
   { name: "Atta, Rice &  Daal", image: assets.atta },
   { name: "Masala , Oil & more ", image: assets.masala },
   { name: "Sauces and Spread", image: assets.sauce },
@@ -26,26 +26,26 @@ const categories = [
 
 const CategorySection = () => {
   return (
-    <div className="w-full px-4 py-8 bg-gray-50">
-      <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 text-gray-800 text-center">
+    <div className="w-full px-4 py-8 bg-gradient-to-b from-[#fdfdfc] via-[#f5fff5] to-[#eaf7ea]">
+      <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 text-[#135e07] text-center">
         Shop by Category
       </h2>
 
-      {/* Responsive grid: 2 cols mobile, 3 tablet, 10 desktop */}
+      {/* Responsive grid: 3 cols mobile, 3 tablet, 10 desktop */}
       <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-10 gap-4">
         {categories.map((category, index) => (
           <div
             key={index}
             className="flex flex-col items-center cursor-pointer transform transition-transform duration-300 hover:scale-105"
           >
-            <div className="w-full h-36 sm:h-40 lg:h-36 p-2 bg-[#D2F5D2] rounded-2xl overflow-hidden shadow-lg flex items-center justify-center">
+            <div className="w-full h-36 sm:h-40 lg:h-36 p-2 bg-gradient-to-br from-[#5c9c2c] to-[#39841e] rounded-2xl overflow-hidden shadow-lg flex items-center justify-center hover:from-[#39841e] hover:to-[#2a6d1b] transition-all">
               <img
                 src={category.image}
                 alt={category.name}
                 className="w-full h-full object-contain"
               />
             </div>
-            <h3 className="mt-2 text-sm sm:text-base lg:text-sm font-semibold text-gray-800 text-center">
+            <h3 className="mt-2 text-sm sm:text-base lg:text-sm font-semibold text-[#2a6d1b] text-center">
               {category.name}
             </h3>
           </div>

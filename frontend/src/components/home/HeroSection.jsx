@@ -5,7 +5,7 @@ import { assets } from "../../assets/assets";
 const HeroSection = () => {
   return (
     // hidden on mobile, flex on large screens
-    <div className="hidden lg:flex flex-col justify-center items-center">
+    <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-b from-[#fdfdfc] via-[#f5fff5] to-[#eaf7ea]">
       {/* top hero photo */}
       <motion.div
         className="w-full p-4 mt-[80px] relative"
@@ -16,14 +16,14 @@ const HeroSection = () => {
         <motion.img
           src={assets.hero1}
           alt="Groceries"
-          className="mx-auto w-full rounded-xl object-cover h-[300px]"
+          className="mx-auto w-full rounded-xl object-cover h-[300px] shadow-lg"
           initial={{ scale: 1 }}
           transition={{ duration: 0.5 }}
         />
 
         {/* Text overlay */}
         <motion.div
-          className="absolute select-none top-8 left-28 flex flex-col gap-5 text-white"
+          className="absolute select-none top-8 left-28 flex flex-col gap-5 text-white drop-shadow-md"
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
@@ -46,7 +46,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.6, ease: "backOut" }}
         >
-          <button className="text-white cursor-pointer rounded-md px-3 py-3 text-lg font-bold bg-[#08c308]">
+          <button className="text-white cursor-pointer rounded-md px-3 py-3 text-lg font-bold bg-gradient-to-r from-[#2a6d1b] to-[#39841e] hover:from-[#39841e] hover:to-[#5c9c2c] transition-colors">
             Start Shopping
           </button>
         </motion.div>
@@ -64,7 +64,7 @@ const HeroSection = () => {
       >
         {/* 1st Card - Fresh Fruits Banner */}
         <motion.div
-          className="w-1/2 h-[250px] bg-gradient-to-r from-green-400 to-green-600 rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
+          className="w-1/2 h-[250px] bg-gradient-to-r from-[#5c9c2c] to-[#39841e] rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
           variants={{
             hidden: { opacity: 0, y: 50 },
             visible: { opacity: 1, y: 0 },
@@ -77,7 +77,7 @@ const HeroSection = () => {
             <p className="mt-2 text-lg font-light">
               Daily picked farm fruits delivered at your doorstep
             </p>
-            <button className="mt-4 bg-white text-green-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-gray-100 transition">
+            <button className="mt-4 bg-white text-[#2a6d1b] px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-gray-100 transition">
               Order Fruits
             </button>
           </div>
@@ -98,7 +98,7 @@ const HeroSection = () => {
 
         {/* 2nd Card - Vegetables Banner */}
         <motion.div
-          className="w-1/2 h-[250px] bg-gradient-to-r from-[#FF9800] to-[#FF5722] rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
+          className="w-1/2 h-[250px] bg-gradient-to-r from-[#c99443] to-[#c86404] rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
           variants={{
             hidden: { opacity: 0, y: 50 },
             visible: { opacity: 1, y: 0 },
@@ -113,7 +113,7 @@ const HeroSection = () => {
             <p className="mt-2 text-lg font-light">
               Get your greens crisp and healthy every day
             </p>
-            <button className="mt-4 bg-white text-orange-600 px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-gray-100 transition">
+            <button className="mt-4 bg-white text-[#c86404] px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-gray-100 transition">
               Shop Vegetables
             </button>
           </div>
@@ -132,9 +132,9 @@ const HeroSection = () => {
           />
         </motion.div>
 
-        {/* 3rd Card */}
+        {/* 3rd Card - Discount Banner */}
         <motion.div
-          className="w-1/2 h-[250px] bg-[#FFDD00] rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
+          className="w-1/2 h-[250px] bg-gradient-to-r from-[#6b591d] to-[#563f12] rounded-3xl relative overflow-hidden flex items-center justify-between px-6"
           variants={{
             hidden: { opacity: 0, y: 50 },
             visible: { opacity: 1, y: 0 },
@@ -142,13 +142,13 @@ const HeroSection = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="z-10 text-black">
+          <div className="z-10 text-white">
             <h1 className="text-5xl font-extrabold leading-tight drop-shadow-md">
-              Flat <span className="text-[#FF3D3D]">20%</span>
+              Flat <span className="text-[#c86404]">20%</span>
             </h1>
             <h2 className="text-3xl font-bold tracking-wide">OFF</h2>
             <p className="mt-2 text-xl font-medium">On First Order</p>
-            <button className="mt-4 bg-black text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-[#333] transition">
+            <button className="mt-4 bg-gradient-to-r from-[#135e07] to-[#2a6d1b] text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:from-[#39841e] hover:to-[#5c9c2c] transition">
               Shop Now
             </button>
           </div>

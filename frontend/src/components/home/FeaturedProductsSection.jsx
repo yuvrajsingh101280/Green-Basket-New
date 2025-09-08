@@ -44,13 +44,13 @@ const FeaturedProductsSection = () => {
   ];
 
   return (
-    <section className="px-4 sm:px-6 py-10">
+    <section className="px-4 sm:px-6 py-10 bg-gradient-to-bl from-[#fdfdfc] via-[#f6fff4] to-[#ecf9ec]">
       {/* Section Header with View All */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#135e07]">
           Best Deals Today
         </h2>
-        <button className="flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm sm:text-base">
+        <button className="flex items-center gap-1 text-[#2a6d1b] hover:text-[#135e07] font-medium text-sm sm:text-base">
           View All <ArrowRight size={16} />
         </button>
       </div>
@@ -62,10 +62,10 @@ const FeaturedProductsSection = () => {
           return (
             <div
               key={product.id}
-              className="min-w-[160px] bg-white rounded-2xl border border-gray-100 hover:shadow-md transition p-3 flex flex-col relative"
+              className="min-w-[160px] bg-white rounded-2xl border border-[#e5e7eb] hover:shadow-md transition p-3 flex flex-col relative"
             >
               {discount > 0 && (
-                <span className="absolute top-3 left-3 bg-green-600 text-white text-[10px] font-semibold px-2 py-1 rounded-lg">
+                <span className="absolute top-3 left-3 bg-[#c86404] text-white text-[10px] font-semibold px-2 py-1 rounded-lg shadow-sm">
                   Save ₹{discount}
                 </span>
               )}
@@ -78,17 +78,19 @@ const FeaturedProductsSection = () => {
                 />
               </div>
 
-              <h3 className="text-xs font-medium text-gray-800 line-clamp-2">
+              <h3 className="text-xs font-medium text-[#2a2a2a] line-clamp-2">
                 {product.name}
               </h3>
               <div className="flex items-center gap-1 mt-1">
-                <span className="text-sm font-bold">₹{product.price}</span>
+                <span className="text-sm font-bold text-[#135e07]">
+                  ₹{product.price}
+                </span>
                 <span className="text-[11px] line-through text-gray-400">
                   ₹{product.oldPrice}
                 </span>
               </div>
 
-              <button className="mt-2 w-full bg-green-600 hover:bg-green-700 text-white rounded-lg py-1 text-xs font-semibold flex items-center justify-center gap-1">
+              <button className="mt-2 w-full bg-gradient-to-r from-[#5c9c2c] to-[#39841e] hover:from-[#39841e] hover:to-[#2a6d1b] text-white rounded-lg py-1 text-xs font-semibold flex items-center justify-center gap-1">
                 <Plus size={12} />
                 Add
               </button>
@@ -104,10 +106,10 @@ const FeaturedProductsSection = () => {
           return (
             <div
               key={product.id}
-              className="bg-white rounded-2xl border border-gray-100 hover:shadow-md transition p-3 flex flex-col relative"
+              className="bg-white rounded-2xl border border-[#e5e7eb] hover:shadow-md transition p-3 flex flex-col relative"
             >
               {discount > 0 && (
-                <span className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-lg">
+                <span className="absolute top-3 left-3 bg-[#c99443] text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-sm">
                   Save ₹{discount}
                 </span>
               )}
@@ -120,11 +122,11 @@ const FeaturedProductsSection = () => {
                 />
               </div>
 
-              <h3 className="text-sm sm:text-base font-medium text-gray-800 line-clamp-2">
+              <h3 className="text-sm sm:text-base font-medium text-[#2a2a2a] line-clamp-2">
                 {product.name}
               </h3>
               <div className="flex items-center gap-2 mt-2">
-                <span className="text-lg font-bold text-gray-900">
+                <span className="text-lg font-bold text-[#135e07]">
                   ₹{product.price}
                 </span>
                 <span className="text-sm line-through text-gray-400">
@@ -132,7 +134,7 @@ const FeaturedProductsSection = () => {
                 </span>
               </div>
 
-              <button className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-2 flex items-center justify-center gap-1 text-sm font-semibold">
+              <button className="mt-3 w-full bg-gradient-to-r from-[#5c9c2c] to-[#39841e] hover:from-[#39841e] hover:to-[#2a6d1b] text-white rounded-xl py-2 flex items-center justify-center gap-1 text-sm font-semibold">
                 <Plus size={16} />
                 Add
               </button>

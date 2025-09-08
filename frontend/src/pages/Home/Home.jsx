@@ -11,6 +11,7 @@ import FlashSaleSection from "../../components/home/FlashSaleSection";
 import RecommendedProductsSection from "../../components/home/recommendedProducts";
 import TrendingProductsSection from "../../components/home/TrendingProductsSection";
 import TestimonialsSection from "../../components/home/TestimonialsSection";
+import DownloadAppSection from "../../components/home/DownloadAppSection";
 // import DailyEssentialsSection from "../../components/home/DailyEssentialsSection";?
 
 const Home = () => {
@@ -30,6 +31,7 @@ const Home = () => {
       <TrendingProductsSection />
       {/* <DailyEssentialsSection /> */}
       <TestimonialsSection />
+      <DownloadAppSection />
     </div>
   );
 };

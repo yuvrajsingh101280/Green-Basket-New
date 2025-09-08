@@ -48,7 +48,13 @@ import coke from "./coke.png"
 import hershey from "./hershey.png"
 import maggi from "./maggi.png"
 import parle from "./parle.png"
+import playstore from "./playstore.png"
+import appstore from "./appstore.png"
+import appIllustration from "./appIllustration.png"
 export const assets = {
+    appIllustration,
+    appstore,
+    playstore,
     parle,
     maggi,
     hershey,

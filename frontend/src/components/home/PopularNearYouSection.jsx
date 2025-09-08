@@ -45,11 +45,13 @@ const PopularNearYouSection = () => {
   ];
 
   return (
-    <section className="px-6 py-10">
+    <section className="px-6 py-12 bg-gradient-to-b from-[#f5fff7] to-[#e6f7eb]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Popular Near You</h2>
-        <button className="text-green-600 font-semibold hover:underline">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[#135e07]">
+          Popular Near You
+        </h2>
+        <button className="text-[#2a6d1b] font-semibold hover:text-[#39841e] transition-colors">
           View All
         </button>
       </div>
@@ -59,17 +61,17 @@ const PopularNearYouSection = () => {
         {products.map((product) => (
           <div
             key={product.id}
-            className="relative min-w-[220px] md:min-w-0 bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-xl transition-transform hover:-translate-y-1 flex flex-col p-4"
+            className="relative min-w-[220px] md:min-w-0 bg-gradient-to-br from-white to-[#f1fff4] border border-green-100 rounded-2xl shadow-md hover:shadow-xl transition-transform hover:-translate-y-1 flex flex-col p-4"
           >
             {/* Discount badge */}
             {product.oldPrice > product.price && (
-              <span className="absolute top-3 z-100 left-3 bg-gradient-to-r from-green-500 to-green-300 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
+              <span className="absolute top-3 z-12 left-3 bg-gradient-to-r from-[#c86404] to-[#c99443] text-white text-xs font-bold px-2 py-1 rounded-lg shadow-md">
                 Save ₹{product.oldPrice - product.price}
               </span>
             )}
 
             {/* Image */}
-            <div className="h-40 flex items-center justify-center mb-4 overflow-hidden rounded-xl">
+            <div className="h-40 flex items-center justify-center mb-4 overflow-hidden rounded-xl bg-white">
               <img
                 src={product.image}
                 alt={product.name}
@@ -78,20 +80,20 @@ const PopularNearYouSection = () => {
             </div>
 
             {/* Info */}
-            <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
+            <h3 className="text-sm font-semibold text-[#135e07] line-clamp-2">
               {product.name}
             </h3>
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg font-bold text-[#2a6d1b]">
                 ₹{product.price}
               </span>
-              <span className="text-sm line-through text-gray-400">
+              <span className="text-sm line-through text-gray-500">
                 ₹{product.oldPrice}
               </span>
             </div>
 
-            {/* Add button (floats bottom-right) */}
-            <button className="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white rounded-full p-3 shadow-lg transition-transform hover:scale-110">
+            {/* Add button (floating) */}
+            <button className="absolute bottom-4 right-4 bg-gradient-to-r from-[#5c9c2c] to-[#39841e] hover:from-[#39841e] hover:to-[#2a6d1b] text-white rounded-full p-3 shadow-lg transition-transform hover:scale-110">
               <ShoppingCart size={18} />
             </button>
           </div>

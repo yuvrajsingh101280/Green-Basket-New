@@ -15,51 +15,51 @@ const WhyShopWithUs = () => {
       title: "10-Minute Delivery",
       description:
         "Groceries at your doorstep in record time, anytime of the day.",
-      icon: <Clock className="w-8 h-8 text-green-600" />,
+      icon: <Clock className="w-8 h-8 text-[white]" />,
     },
     {
       id: 2,
       title: "Wide Range of Products",
       description:
         "From fresh fruits to daily essentials, shop 5000+ items easily.",
-      icon: <Package className="w-8 h-8 text-green-600" />,
+      icon: <Package className="w-8 h-8 text-[white]" />,
     },
     {
       id: 3,
       title: "Best Prices & Offers",
       description:
         "Save more with exclusive deals, discounts, and bulk offers.",
-      icon: <BadgePercent className="w-8 h-8 text-green-600" />,
+      icon: <BadgePercent className="w-8 h-8 text-[white]" />,
     },
     {
       id: 4,
       title: "Safe & Secure Payments",
       description: "Multiple payment methods with full encryption and trust.",
-      icon: <ShieldCheck className="w-8 h-8 text-green-600" />,
+      icon: <ShieldCheck className="w-8 h-8 text-[white]" />,
     },
     {
       id: 5,
       title: "Live Order Tracking",
       description: "Know exactly where your order is, in real-time.",
-      icon: <Truck className="w-8 h-8 text-green-600" />,
+      icon: <Truck className="w-8 h-8 text-[white]" />,
     },
     {
       id: 6,
       title: "24x7 Customer Support",
       description:
         "Our support team is always available to assist you instantly.",
-      icon: <Headphones className="w-8 h-8 text-green-600" />,
+      icon: <Headphones className="w-8 h-8 text-[white]" />,
     },
   ];
 
   return (
-    <section className="px-6 py-16 bg-gradient-to-b from-white to-green-50">
+    <section className="px-6 py-16 bg-gradient-to-br from-[#f5fff7] to-[#e6f7eb]">
       {/* Section Title */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800">
-          Why Shop With <span className="text-green-600">Green Basket</span>?
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#135e07]">
+          Why Shop With <span className="text-[#2a6d1b]">Green Basket</span>?
         </h2>
-        <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-3 text-gray-700 max-w-2xl mx-auto">
           Trusted by thousands, we make grocery shopping simple, fast, and
           affordable. Experience the future of instant delivery.
         </p>
@@ -70,15 +70,15 @@ const WhyShopWithUs = () => {
         {features.map((feature) => (
           <div
             key={feature.id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col items-start border border-gray-100 hover:border-green-200"
+            className="bg-gradient-to-br from-white to-[#f1fff4] rounded-2xl shadow-md hover:shadow-xl transition-all p-6 flex flex-col items-start border border-green-100 hover:border-green-300 hover:scale-105 duration-300"
           >
-            <div className="mb-4 bg-green-100 p-3 rounded-xl">
+            <div className="mb-4 bg-gradient-to-r from-[#5c9c2c] to-[#39841e] p-3 rounded-xl shadow-md">
               {feature.icon}
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2">
+            <h3 className="text-lg font-bold text-[#135e07] mb-2">
               {feature.title}
             </h3>
-            <p className="text-gray-600 text-sm">{feature.description}</p>
+            <p className="text-gray-700 text-sm">{feature.description}</p>
           </div>
         ))}
       </div>
