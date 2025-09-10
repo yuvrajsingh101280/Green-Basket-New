@@ -9,7 +9,7 @@ export const handleRazorpayWebhook = async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers["x-razorpay-signature"];
     // console.log(signature)
-    // ✅ Razorpay sends raw buffer, not parsed JSON
+
     const rawBody = req.body;
     const bodyString = rawBody.toString()
     // console.log(" Webhook triggered");
